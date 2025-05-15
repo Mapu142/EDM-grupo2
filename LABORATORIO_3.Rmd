@@ -15,7 +15,7 @@ los comandos son:
 git pull origin main
 git add .
 git commit -m "comentario"
-git push origin Tu_rama
+git push -u origin Tu_rama
 
 
 ```{r pressure, echo=FALSE}
