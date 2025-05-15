@@ -1,6 +1,6 @@
 ---
 title: "LABORATORIO_3"
-author: "María Paula Camargo Rincón"
+author: "María Paula Camargo Rincón , Sergio Alejandro Buitrago Melo"
 date: '2025-05-14'
 output: pdf_document
 ---
@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## hola mundo
-los comandos son:
+los comandos son (usenlo en la terminal, no en la consola):
 
 git pull origin main
 git add .
@@ -26,7 +26,7 @@ hacen el pull request
 -git push origin su rama
 
 
-ashfjksdhfakjgfdsbgaljf
+ashfjksdhfakjgfdsbgaljf <- Profundo
 
 
 ```{r pressure, echo=FALSE}
