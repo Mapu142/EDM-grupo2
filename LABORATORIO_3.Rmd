@@ -15,7 +15,12 @@ los comandos son:
 git pull origin main
 git add .
 git commit -m "comentario"
-git push -u origin Tu_rama
+git push origin Tu_rama
+jasdfs
+adf
+saf
+sfsda
+fsd
 
 
 ```{r pressure, echo=FALSE}
