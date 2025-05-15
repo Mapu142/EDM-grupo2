@@ -9,7 +9,12 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## hola
+## hola mundo
+gente
+hola
+safd
+adsf
+
 
 ```{r pressure, echo=FALSE}
 plot(pressure)
