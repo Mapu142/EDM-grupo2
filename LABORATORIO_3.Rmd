@@ -16,11 +16,14 @@ git pull origin main
 git add .
 git commit -m "comentario"
 git push origin Tu_rama
-jasdfs
-adf
-saf
-sfsda
-fsd
+
+hacen el pull request
+
+se pasan a main local
+git pull origin main
+luego a su rama local
+git merge main
+git push origin su rama
 
 
 ```{r pressure, echo=FALSE}
