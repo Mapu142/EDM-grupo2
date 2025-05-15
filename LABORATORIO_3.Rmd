@@ -19,11 +19,14 @@ git push origin Tu_rama
 
 hacen el pull request
 
-se pasan a main local
-git pull origin main
-luego a su rama local
-git merge main
-git push origin su rama
+-se pasan a main local
+-git pull origin main
+-luego a su rama local
+-git merge main
+-git push origin su rama
+
+
+ashfjksdhfakjgfdsbgaljf
 
 
 ```{r pressure, echo=FALSE}
