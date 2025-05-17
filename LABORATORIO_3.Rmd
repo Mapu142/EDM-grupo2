@@ -1,6 +1,12 @@
 ---
 title: "LABORATORIO_3"
-author: "María Paula Camargo Rincón , Sergio Alejandro Buitrago Melo"
+author:
+  - Sergio Alejandro Buitrago Melo
+  - María Alejandra Cabra Arias
+  - María Paula Camargo Rincón
+  - Ana María Chacón Bello
+  - Sergio Alejandro Gaona Díaz
+  - Juan Esteban García Muete
 date: '2025-05-14'
 output: pdf_document
 editor_options: 
