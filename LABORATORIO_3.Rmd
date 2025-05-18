@@ -47,6 +47,8 @@ Librerias y preliminares:
 #librerias
 library(readxl)
 library(FactoMineR)
+library(ggplot2)
+library(factoextra)
 #base de datos
 ciudades <- ciudades_original_filtrado_con_etiquetas
 summary(ciudades)
@@ -68,41 +70,110 @@ View(ciudadest)
 PRIMER PUNTO
 
 ```{r setup, include=FALSE}
-#ACP todas las variables que le corresponden
-acp1<-PCA(ciudadest)
+#ACP todas las variables que le corresponden####
+acp1<-PCA(ciudadest,ncp = 7)
 
 #contiene los auto valores correspondientes a los componentes principales
-s1<-acp1$eig
-s1
+acp1$eig
 
 #al sumar la columna de los eigenvalue da 24
-sum(s1[,1])
+sum(acp1$eig[,1])
 
 #la coluna de porcentages de varianza acumulados
 #nos muestra que tan importantes son los primeros componentes
-# y es notable como con los primeros 10 ya se acumula
-# el 90 porciento de la varianza
-s1[,3]
+# y es notable como con los primeros 7 ya se acumula
+# el 83 porciento de la varianza
+acp1$eig[,3]
+
+#coordenadas de las variables
+acp1$var$coord
 
 #correlaciones variable factor
 acp1$var$cor
-#RH13 a Dimension 4
-#no se como interpretar esto
+#basicamente estas covarianzas nos habla de como las variables
+#se relacionan con los factores y en que medida los construye
+
+#cosenos cuadrados de las variables
+acp1$var$cos2
 
 ```
+Gràficos primer punto 
 
-SEGUNDO PUNTO
+```{r setup, include=FALSE}
+
+#  Gráfico de individuos 
+G11<-fviz_pca_ind(acp1,
+             col.ind = "cos2",  # calidad de representación
+             gradient.cols = c("darkgreen", "#E7B800", "#FC4E07"),
+             repel = TRUE
+)
+G11
+```
+
+```{r setup, include=FALSE}
+
+G12<-fviz_pca_var(acp1,
+                  col.var = 'red',
+                  alpha.var = 0.5,
+                  select.var = list(contrib = 7),
+                  repel = TRUE,
+                  col.quanti.sup = 'darkgrey'
+)
+G12
+```
 
 ```{r setup, include=FALSE}
 
 
-#ACP variables con ilustrativas RH####
+# 6. Biplot (variables + individuos)
+G13<-fviz_pca_biplot(acp1,
+                     col.ind = "red",
+                     col.var = "darkblue",
+                     select.var = list(contrib = 7),
+                     repel = T,
+                     col.quanti.sup = 'darkgrey'
+)
+G13
+```
+SEGUNDO PUNTO
+
+```{r setup, include=FALSE}
+
 acp2<-PCA(ciudadest,quanti.sup = c(1:14))
 #Solo las variables INFRA_25 a INFRA_38
 #(columnas 15 a 24) serán activas.
 #Las variables RH_* (1 a 14) no se usan para
 #construir los ejes principales, pero se proyectan
 #en el plano factorial para ser interpretadas.
+
+#contiene los auto valores correspondientes a los componentes principales
+acp2$eig
+
+#al sumar la columna de los eigenvalue da 10
+sum(acp2$eig[,1])
+
+#la coluna de porcentages de varianza acumulados
+#nos muestra que tan importantes son los primeros componentes
+# y es notable como con los primeros 5 ya se acumula
+# el 88 porciento de la varianza
+acp2$eig[c(1:5),c(1,3)]
+
+#coordenadas de las variables
+acp2$var$coord
+
+#correlaciones variable factor
+acp2$var$cor
+#basicamente estas covarianzas nos habla de como las variables
+#se relacionan con los factores y en que medida los construye
+
+#cosenos cuadrados de las variables
+acp2$var$cos2
+
+var_contrib <- data.frame(acp2$var$contrib)
+
+top5_vars <- rownames(var_contrib)[order(var_contrib$Dim.1 + var_contrib$Dim.2, decreasing = TRUE)][1:5]
+sup_vars <- rownames(acp2$quanti.sup$coord)
+all_vars <- c(top5_vars, sup_vars)
 s2<-acp2$eig
 sum(s2[,1])
 ```
@@ -125,22 +196,26 @@ G21
 G22<-fviz_pca_var(acp2,
                   col.var = 'red',
                   alpha.var = 0.5,
-                  select.var = list(active = 1:10, sup = 1:14),
                   repel = TRUE,
-                  col.quanti.sup = 'darkgrey'
+                  col.quanti.sup = 'darkgrey',
+                  select.var = list(name =c(all_vars)),
+                  title = 'Variables y suplementarias'
 )
+
 G22
 ```
 
 ```{r setup, include=FALSE}
 
 
-# 6. Biplot (variables + individuos)
+
 G23<-fviz_pca_biplot(acp2,
                      col.ind = "red",
                      col.var = "darkblue",
                      repel = T,
-                     col.quanti.sup = 'darkgrey'
+                     col.quanti.sup = 'darkgrey',
+                     select.var = list(name =c(all_vars)),
+            title = 'Biplot'
 )
 G23
 ```
@@ -150,13 +225,75 @@ G23
 TERCER PUNTO
 
 ```{r setup, include=FALSE}
-#ACP RH con ilustrativas variables####
-acp3<-PCA(ciudadest,quanti.sup = c(15:24))
+acp3<-PCA(ciudadest,quanti.sup = c(15:24),ncp = 6)
 #Esto hace lo opuesto: trata las variables de
 #infraestructura (15 a 24) como suplementarias y
 #las variables RH (1 a 14) como activas.
+
+#contiene los auto valores correspondientes a los componentes principales
 acp3$eig
 
-#Comparacion de las tres ####
+#al sumar la columna de los eigenvalue da 14
+sum(acp3$eig[,1])
 
+#la coluna de porcentages de varianza acumulados
+#nos muestra que tan importantes son los primeros componentes
+# y es notable como con los primeros 6 ya se acumula
+# el 85 porciento de la varianza
+acp3$eig[c(1:6),c(1,3)]
+
+#coordenadas de las variables
+acp3$var$coord
+
+#correlaciones variable factor
+acp3$var$cor
+#basicamente estas covarianzas nos habla de como las variables
+#se relacionan con los factores y en que medida los construye
+
+#cosenos cuadrados de las variables
+acp3$var$cos2
+var_contrib3 <- data.frame(acp3$var$contrib)
+
+top5_vars3 <- rownames(var_contrib3)[order(var_contrib3$Dim.1 + var_contrib3$Dim.2, decreasing = TRUE)][1:6]
+sup_vars3 <- rownames(acp3$quanti.sup$coord)
+all_vars3 <- c(top5_vars3, sup_vars3)
+
+
+```
+Gràficos punto #3
+
+```{r setup, include=FALSE}
+
+#  Gráfico de individuos 
+G31<-fviz_pca_ind(acp3,
+             col.ind = "cos2",  # calidad de representación
+             gradient.cols = c("darkgreen", "#E7B800", "#FC4E07"),
+             repel = TRUE
+)
+G31
+```
+
+```{r setup, include=FALSE}
+
+G32<-fviz_pca_var(acp3,
+                  col.var = 'red',
+                  alpha.var = 0.5,
+                  repel = TRUE,
+                  col.quanti.sup = 'darkgrey',
+                  select.var = list(name =c(all_vars3)),
+                  title = 'Variables y suplementarias'
+)
+
+G32
+```
+```{r setup, include=FALSE}
+G33<-fviz_pca_biplot(acp3,
+                     col.ind = "red",
+                     col.var = "darkblue",
+                     repel = T,
+                     col.quanti.sup = 'darkgrey',
+                     select.var = list(name =c(all_vars3)),
+            title = 'Biplot'
+)
+G33
 ```
