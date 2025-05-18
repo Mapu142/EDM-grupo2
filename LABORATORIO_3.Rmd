@@ -14,10 +14,6 @@ editor_options:
     wrap: 72
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 ## hola mundo
 
 los comandos son (usenlo en la terminal, no en la consola):
@@ -30,27 +26,19 @@ hacen el pull request
 -se pasan a main local -git pull origin main -luego a su rama local -git
 merge main -git push origin su rama
 
-ashfjksdhfakjgfdsbgaljf \<- Profundo
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to
-prevent printing of the R code that generated the plot.
 
 Laboratorio #2
 
 Librerias y preliminares:
 
-```{r setup, include=FALSE}
+```{r}
 #librerias
 library(readxl)
 library(FactoMineR)
 library(ggplot2)
 library(factoextra)
 #base de datos
-ciudades <- ciudades_original_filtrado_con_etiquetas
+ciudades <- read_xlsx("Ciudades.xlsx")
 summary(ciudades)
 str(ciudades)
 View(ciudades)
@@ -58,7 +46,7 @@ View(ciudades)
 
 Se realizaràn los distintos ACP con las variables de RH e INFRA
 
-```{r setup, include=FALSE}
+```{r}
 #base de datos RH+INFRA
 ciudadest<-ciudades[,c(2:15,21:30)]
 str(ciudadest)
@@ -69,7 +57,7 @@ View(ciudadest)
 
 PRIMER PUNTO
 
-```{r setup, include=FALSE}
+```{r}
 #ACP todas las variables que le corresponden####
 acp1<-PCA(ciudadest,ncp = 7)
 
@@ -99,7 +87,7 @@ acp1$var$cos2
 ```
 Gràficos primer punto 
 
-```{r setup, include=FALSE}
+```{r}
 
 #  Gráfico de individuos 
 G11<-fviz_pca_ind(acp1,
@@ -110,7 +98,7 @@ G11<-fviz_pca_ind(acp1,
 G11
 ```
 
-```{r setup, include=FALSE}
+```{r}
 
 G12<-fviz_pca_var(acp1,
                   col.var = 'red',
@@ -122,7 +110,7 @@ G12<-fviz_pca_var(acp1,
 G12
 ```
 
-```{r setup, include=FALSE}
+```{r}
 
 
 # 6. Biplot (variables + individuos)
@@ -137,7 +125,7 @@ G13
 ```
 SEGUNDO PUNTO
 
-```{r setup, include=FALSE}
+```{r}
 
 acp2<-PCA(ciudadest,quanti.sup = c(1:14))
 #Solo las variables INFRA_25 a INFRA_38
@@ -180,7 +168,7 @@ sum(s2[,1])
 
 Gràficos punto#2:
 
-```{r setup, include=FALSE}
+```{r}
 
 #  Gráfico de individuos 
 G21<-fviz_pca_ind(acp2,
@@ -191,7 +179,7 @@ G21<-fviz_pca_ind(acp2,
 G21
 ```
 
-```{r setup, include=FALSE}
+```{r}
 
 G22<-fviz_pca_var(acp2,
                   col.var = 'red',
@@ -205,7 +193,7 @@ G22<-fviz_pca_var(acp2,
 G22
 ```
 
-```{r setup, include=FALSE}
+```{r}
 
 
 
@@ -224,7 +212,7 @@ G23
 
 TERCER PUNTO
 
-```{r setup, include=FALSE}
+```{r}
 acp3<-PCA(ciudadest,quanti.sup = c(15:24),ncp = 6)
 #Esto hace lo opuesto: trata las variables de
 #infraestructura (15 a 24) como suplementarias y
@@ -262,7 +250,7 @@ all_vars3 <- c(top5_vars3, sup_vars3)
 ```
 Gràficos punto #3
 
-```{r setup, include=FALSE}
+```{r}
 
 #  Gráfico de individuos 
 G31<-fviz_pca_ind(acp3,
@@ -273,7 +261,7 @@ G31<-fviz_pca_ind(acp3,
 G31
 ```
 
-```{r setup, include=FALSE}
+```{r}
 
 G32<-fviz_pca_var(acp3,
                   col.var = 'red',
@@ -286,7 +274,7 @@ G32<-fviz_pca_var(acp3,
 
 G32
 ```
-```{r setup, include=FALSE}
+```{r}
 G33<-fviz_pca_biplot(acp3,
                      col.ind = "red",
                      col.var = "darkblue",
