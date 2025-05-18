@@ -70,26 +70,31 @@ View(ciudadest)
 PRIMER PUNTO
 
 ```{r setup, include=FALSE}
-#ACP todas las variables que le corresponden
-acp1<-PCA(ciudadest)
+#ACP todas las variables que le corresponden####
+acp1<-PCA(ciudadest,ncp = 7)
 
 #contiene los auto valores correspondientes a los componentes principales
-s1<-acp1$eig
-s1
+acp1$eig
 
 #al sumar la columna de los eigenvalue da 24
-sum(s1[,1])
+sum(acp1$eig[,1])
 
 #la coluna de porcentages de varianza acumulados
 #nos muestra que tan importantes son los primeros componentes
-# y es notable como con los primeros 10 ya se acumula
-# el 90 porciento de la varianza
-s1[,3]
+# y es notable como con los primeros 7 ya se acumula
+# el 83 porciento de la varianza
+acp1$eig[,3]
+
+#coordenadas de las variables
+acp1$var$coord
 
 #correlaciones variable factor
 acp1$var$cor
-#RH13 a Dimension 4
-#no se como interpretar esto
+#basicamente estas covarianzas nos habla de como las variables
+#se relacionan con los factores y en que medida los construye
+
+#cosenos cuadrados de las variables
+acp1$var$cos2
 
 ```
 Gràficos primer punto 
@@ -134,8 +139,36 @@ SEGUNDO PUNTO
 
 ```{r setup, include=FALSE}
 
-
 acp2<-PCA(ciudadest,quanti.sup = c(1:14))
+#Solo las variables INFRA_25 a INFRA_38
+#(columnas 15 a 24) serán activas.
+#Las variables RH_* (1 a 14) no se usan para
+#construir los ejes principales, pero se proyectan
+#en el plano factorial para ser interpretadas.
+
+#contiene los auto valores correspondientes a los componentes principales
+acp2$eig
+
+#al sumar la columna de los eigenvalue da 10
+sum(acp2$eig[,1])
+
+#la coluna de porcentages de varianza acumulados
+#nos muestra que tan importantes son los primeros componentes
+# y es notable como con los primeros 5 ya se acumula
+# el 88 porciento de la varianza
+acp2$eig[c(1:5),c(1,3)]
+
+#coordenadas de las variables
+acp2$var$coord
+
+#correlaciones variable factor
+acp2$var$cor
+#basicamente estas covarianzas nos habla de como las variables
+#se relacionan con los factores y en que medida los construye
+
+#cosenos cuadrados de las variables
+acp2$var$cos2
+
 var_contrib <- data.frame(acp2$var$contrib)
 
 top5_vars <- rownames(var_contrib)[order(var_contrib$Dim.1 + var_contrib$Dim.2, decreasing = TRUE)][1:5]
@@ -192,9 +225,33 @@ G23
 TERCER PUNTO
 
 ```{r setup, include=FALSE}
-acp3<-PCA(ciudadest,quanti.sup = c(15:24))
+acp3<-PCA(ciudadest,quanti.sup = c(15:24),ncp = 6)
+#Esto hace lo opuesto: trata las variables de
+#infraestructura (15 a 24) como suplementarias y
+#las variables RH (1 a 14) como activas.
+
+#contiene los auto valores correspondientes a los componentes principales
 acp3$eig
 
+#al sumar la columna de los eigenvalue da 14
+sum(acp3$eig[,1])
+
+#la coluna de porcentages de varianza acumulados
+#nos muestra que tan importantes son los primeros componentes
+# y es notable como con los primeros 6 ya se acumula
+# el 85 porciento de la varianza
+acp3$eig[c(1:6),c(1,3)]
+
+#coordenadas de las variables
+acp3$var$coord
+
+#correlaciones variable factor
+acp3$var$cor
+#basicamente estas covarianzas nos habla de como las variables
+#se relacionan con los factores y en que medida los construye
+
+#cosenos cuadrados de las variables
+acp3$var$cos2
 var_contrib3 <- data.frame(acp3$var$contrib)
 
 top5_vars3 <- rownames(var_contrib3)[order(var_contrib3$Dim.1 + var_contrib3$Dim.2, decreasing = TRUE)][1:6]
