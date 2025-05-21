@@ -52,7 +52,6 @@ ciudadest<-ciudades[,c(2:15,21:30)]
 str(ciudadest)
 View(ciudadest)
 
-?PCA
 ```
 
 PRIMER PUNTO
@@ -60,7 +59,18 @@ PRIMER PUNTO
 ```{r}
 #ACP todas las variables que le corresponden####
 acp1<-PCA(ciudadest,ncp = 7)
+PCA(ciudadest,ncp = 7,axes = c(2,3))
+for (i in 1:7) {
+  if (i+1<=7) {
+    PCA(ciudadest,ncp = 7,axes = c(i,i+1))
+  }
+}
+```
 
+
+
+
+```{r}
 #contiene los auto valores correspondientes a los componentes principales
 acp1$eig
 
@@ -83,6 +93,7 @@ acp1$var$cor
 
 #cosenos cuadrados de las variables
 acp1$var$cos2
+
 
 ```
 Gràficos primer punto 
