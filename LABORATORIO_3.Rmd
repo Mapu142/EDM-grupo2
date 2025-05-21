@@ -38,18 +38,21 @@ library(FactoMineR)
 library(ggplot2)
 library(factoextra)
 library(dplyr)
+library(tibble)
 #base de datos
 ciudades <- read_xlsx("Ciudades.xlsx")
 summary(ciudades)
 str(ciudades)
 View(ciudades)
+#rownames(ciudades) = ciudades$CIUDADES
 ```
 
 Se realizaràn los distintos ACP con las variables de RH e INFRA
 
 ```{r}
 #base de datos RH+INFRA
-ciudadest<-ciudades[,c(2:15,21:30)]
+ciudadest<-ciudades[,c(1:15,21:30)]
+rownames(ciudadest) = ciudades$CIUDADES
 str(ciudadest)
 View(ciudadest)
 
@@ -59,6 +62,8 @@ PRIMER PUNTO
 
 ```{r}
 #ACP todas las variables que le corresponden####
+# Ahora convierte esa columna en rownames
+ciudadest <- column_to_rownames(ciudadest, var = "CIUDADES")
 acp1<-PCA(ciudadest,ncp = 7)
 PCA(ciudadest,ncp = 7,axes = c(2,3))
 for (i in 1:7) {
@@ -66,6 +71,8 @@ for (i in 1:7) {
     PCA(ciudadest,ncp = 7,axes = c(i,i+1))
   }
 }
+plot(acp1$ind$coord[, 1:2], type = "n")
+text(acp1$ind$coord[, 1:2], labels = rownames(ciudadest), cex = 0.8)
 ```
 
 
@@ -102,7 +109,7 @@ Gràficos primer punto
 ```{r}
 
 #  Gráfico de individuos 
-G11<-fviz_pca_ind(acp1,
+G11<-fviz_pca_ind(acp1, geom = 'text',
              col.ind = "cos2",  # calidad de representación
              gradient.cols = c("darkgreen",  "#FC4E07"),
              repel = TRUE
@@ -120,35 +127,35 @@ G11
 cos2_ind <- as.data.frame(acp1$ind$cos2)
 
 # 2. Crear una columna con el número de fila (que actuará como ID inicial)
-cos2_ind <- cos2_ind %>%
-  mutate(Fila = row_number())
+#cos2_ind <- cos2_ind %>%
+ # mutate(Fila = row_number())
 
 # 3. Crear una función para obtener los 3 valores más altos y sus IDs por dimensión
-obtener_top_3 <- function(df, dimension) {
-  top_3 <- df %>%
-    select(Fila, {{ dimension }}) %>%
-    arrange(desc({{ dimension }})) %>%
-    head(3) %>%
-    rename(!!dimension := {{ dimension }}) # Mantener el nombre de la dimensión
-  return(top_3)
-}
+#obtener_top_3 <- function(df, dimension) {
+#  top_3 <- df %>%
+#    select(Fila, {{ dimension }}) %>%
+#    arrange(desc({{ dimension }})) %>%
+#    head(3) %>%
+#    rename(!!dimension := {{ dimension }}) # Mantener el nombre de la dimensión
+#  return(top_3)
+#}
 
 # 4. Obtener los nombres de las dimensiones (componentes principales)
-nombres_dimensiones <- names(cos2_ind)[!names(cos2_ind) == "Fila"]
+#nombres_dimensiones <- names(cos2_ind)[!names(cos2_ind) == "Fila"]
 
 # 5. Aplicar la función a cada dimensión y combinar los resultados
-lista_top_3 <- lapply(nombres_dimensiones, function(dim) obtener_top_3(cos2_ind, as.name(dim)))
-tabla_top_3_cos2 <- bind_rows(lista_top_3, .id = "Dimension")
+#lista_top_3 <- lapply(nombres_dimensiones, function(dim) obtener_top_3(cos2_ind, as.name(dim)))
+#tabla_top_3_cos2 <- bind_rows(lista_top_3, .id = "Dimension")
 
 # 6. Unir con el otro dataframe para obtener el ID deseado
 # Asegúrate de que la columna 'ID_Individuo' en 'otro_dataframe'
 # se corresponde con el número de fila en el orden original de tus datos 'ciudadest'.
-tabla_final <- tabla_top_3_cos2 %>%
-  left_join(otro_dataframe, by = c("Fila" = "ID_Individuo")) %>%
-  select(Dimension, Fila, ID_Individuo, everything()) # Reorganizar columnas
+#tabla_final <- tabla_top_3_cos2 %>%
+ # left_join(otro_dataframe, by = c("Fila" = "ID_Individuo")) %>%
+  #select(Dimension, Fila, ID_Individuo, everything()) # Reorganizar columnas
 
 # Imprimir la tabla resultante
-print(tabla_final)
+#print(tabla_final)
 ```
 
 ```{r}
@@ -172,6 +179,7 @@ G13<-fviz_pca_biplot(acp1,
                   gradient.cols = c("darkgreen",  "red"),
                      col.var = "darkblue",
                      select.var = list(contrib = 7),
+                  geom = "text",
                      repel = T,
                      col.quanti.sup = 'darkgrey'
 )
@@ -345,6 +353,7 @@ G33<-fviz_pca_biplot(acp3,
                      repel = T,
                      col.quanti.sup = 'darkgrey',
                      select.var = list(name =c(all_vars3)),
+                  geom = "text",
             title = 'Biplot'
 )
 G33
