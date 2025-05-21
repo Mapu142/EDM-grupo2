@@ -37,6 +37,7 @@ library(readxl)
 library(FactoMineR)
 library(ggplot2)
 library(factoextra)
+library(dplyr)
 #base de datos
 ciudades <- read_xlsx("Ciudades.xlsx")
 summary(ciudades)
@@ -94,7 +95,7 @@ acp1$var$cor
 #cosenos cuadrados de las variables
 acp1$var$cos2
 
-
+acp1$ind$cos2
 ```
 Gràficos primer punto 
 
@@ -103,10 +104,51 @@ Gràficos primer punto
 #  Gráfico de individuos 
 G11<-fviz_pca_ind(acp1,
              col.ind = "cos2",  # calidad de representación
-             gradient.cols = c("darkgreen", "#E7B800", "#FC4E07"),
+             gradient.cols = c("darkgreen",  "#FC4E07"),
              repel = TRUE
 )
 G11
+```
+```{r}
+# Supongamos que 'acp1' es el resultado de tu análisis PCA
+# y que 'otro_dataframe' es el otro dataframe con el que quieres asociar los individuos.
+# Este 'otro_dataframe' debería tener al menos una columna que corresponda
+# al número de fila o a algún identificador de los individuos en 'ciudadest'.
+# Asumiremos que esta columna se llama 'ID_Individuo'.
+
+# 1. Obtener la matriz de cosenos cuadrados de los individuos
+cos2_ind <- as.data.frame(acp1$ind$cos2)
+
+# 2. Crear una columna con el número de fila (que actuará como ID inicial)
+cos2_ind <- cos2_ind %>%
+  mutate(Fila = row_number())
+
+# 3. Crear una función para obtener los 3 valores más altos y sus IDs por dimensión
+obtener_top_3 <- function(df, dimension) {
+  top_3 <- df %>%
+    select(Fila, {{ dimension }}) %>%
+    arrange(desc({{ dimension }})) %>%
+    head(3) %>%
+    rename(!!dimension := {{ dimension }}) # Mantener el nombre de la dimensión
+  return(top_3)
+}
+
+# 4. Obtener los nombres de las dimensiones (componentes principales)
+nombres_dimensiones <- names(cos2_ind)[!names(cos2_ind) == "Fila"]
+
+# 5. Aplicar la función a cada dimensión y combinar los resultados
+lista_top_3 <- lapply(nombres_dimensiones, function(dim) obtener_top_3(cos2_ind, as.name(dim)))
+tabla_top_3_cos2 <- bind_rows(lista_top_3, .id = "Dimension")
+
+# 6. Unir con el otro dataframe para obtener el ID deseado
+# Asegúrate de que la columna 'ID_Individuo' en 'otro_dataframe'
+# se corresponde con el número de fila en el orden original de tus datos 'ciudadest'.
+tabla_final <- tabla_top_3_cos2 %>%
+  left_join(otro_dataframe, by = c("Fila" = "ID_Individuo")) %>%
+  select(Dimension, Fila, ID_Individuo, everything()) # Reorganizar columnas
+
+# Imprimir la tabla resultante
+print(tabla_final)
 ```
 
 ```{r}
@@ -126,7 +168,8 @@ G12
 
 # 6. Biplot (variables + individuos)
 G13<-fviz_pca_biplot(acp1,
-                     col.ind = "red",
+                  col.ind = "cos2",
+                  gradient.cols = c("darkgreen",  "red"),
                      col.var = "darkblue",
                      select.var = list(contrib = 7),
                      repel = T,
@@ -184,7 +227,7 @@ Gràficos punto#2:
 #  Gráfico de individuos 
 G21<-fviz_pca_ind(acp2,
              col.ind = "cos2",  # calidad de representación
-             gradient.cols = c("darkgreen", "#E7B800", "#FC4E07"),
+             gradient.cols = c("darkgreen",  "red"),
              repel = TRUE
 )
 G21
@@ -193,7 +236,8 @@ G21
 ```{r}
 
 G22<-fviz_pca_var(acp2,
-                  col.var = 'red',
+                  col.var = "darkblue",
+                  gradient.cols = c("darkgreen", "#E7B800", "red"),
                   alpha.var = 0.5,
                   repel = TRUE,
                   col.quanti.sup = 'darkgrey',
@@ -209,7 +253,8 @@ G22
 
 
 G23<-fviz_pca_biplot(acp2,
-                     col.ind = "red",
+                     col.ind = "cos2",
+                     gradient.cols = c("darkgreen", "red"),
                      col.var = "darkblue",
                      repel = T,
                      col.quanti.sup = 'darkgrey',
@@ -219,7 +264,13 @@ G23<-fviz_pca_biplot(acp2,
 G23
 ```
 
-(resaltar 3 (bogota ) 16 (riohacha) y 17 (san andres ))
+Al revisar las coordenadas 3 individuos resaltan al ojo, Bogotá (3), San Andrés (17) y Riohacha (16) por ser los individuos más alejados del origen de nuestro plano, esto nos indica singularidades y posibles aspectos a destacar de estás ciudades.
+
+Al revisar a San Andrés vemos que este guarda una relación negativa con las variables INFRA 27/28 ( acueducto y alcantarillado cada 10000 habitantes) esto explicable fácilmente gracias a su baja población y su geografía de isla que dificulta la construcción de infraestructura pública como alcantarillado.
+
+Por el lado de la capital vemos su   alto posicionamiento en la dimensión 2, y a pesar que existe una relación destacable con INFRA 37/25 (clientes de internet y líneas telefónicas cada 10000 habitantes), el rasgo más importante de este individuo es su alta  posición en el eje Y, explicada en parte gracias a la variable de carga aérea (INFRA 33) dónde Bogota es lider seguido de cerca de San Andrés. 
+
+En el tercer cuadrante encontramos a Riohacha, el cual es representado de manera negativa con respecto a nuestras  variables de telecomunicaciones siendo este el individuo mas destacable del lado negativo del eje X
 
 TERCER PUNTO
 
@@ -259,6 +310,7 @@ all_vars3 <- c(top5_vars3, sup_vars3)
 
 
 ```
+
 Gràficos punto #3
 
 ```{r}
@@ -266,7 +318,7 @@ Gràficos punto #3
 #  Gráfico de individuos 
 G31<-fviz_pca_ind(acp3,
              col.ind = "cos2",  # calidad de representación
-             gradient.cols = c("darkgreen", "#E7B800", "#FC4E07"),
+             gradient.cols = c("darkgreen",  "#FC4E07"),
              repel = TRUE
 )
 G31
@@ -287,7 +339,8 @@ G32
 ```
 ```{r}
 G33<-fviz_pca_biplot(acp3,
-                     col.ind = "red",
+                  col.ind = "cos2",
+                  gradient.cols = c("darkgreen", "red"),
                      col.var = "darkblue",
                      repel = T,
                      col.quanti.sup = 'darkgrey',
