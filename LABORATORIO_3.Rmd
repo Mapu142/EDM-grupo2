@@ -23,8 +23,11 @@ origin Tu_rama
 
 hacen el pull request
 
+
 -se pasan a main local -git pull origin main -luego a su rama local -git
 merge main -git push origin su rama
+
+
 
 
 Laboratorio #2
@@ -39,6 +42,7 @@ library(ggplot2)
 library(factoextra)
 library(dplyr)
 library(tibble)
+library(sqldf)
 #base de datos
 ciudades <- read_xlsx("Ciudades.xlsx")
 summary(ciudades)
