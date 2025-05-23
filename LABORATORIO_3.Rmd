@@ -14,10 +14,6 @@ editor_options:
     wrap: 72
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 ## hola mundo
 
 los comandos son (usenlo en la terminal, no en la consola):
@@ -27,52 +23,66 @@ origin Tu_rama
 
 hacen el pull request
 
+
 -se pasan a main local -git pull origin main -luego a su rama local -git
 merge main -git push origin su rama
 
-ashfjksdhfakjgfdsbgaljf \<- Profundo
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to
-prevent printing of the R code that generated the plot.
 
 Laboratorio #2
 
 Librerias y preliminares:
 
-```{r setup, include=FALSE}
+```{r}
 #librerias
 library(readxl)
 library(FactoMineR)
 library(ggplot2)
 library(factoextra)
+library(dplyr)
+library(tibble)
+library(sqldf)
 #base de datos
-ciudades <- ciudades_original_filtrado_con_etiquetas
+ciudades <- read_xlsx("Ciudades.xlsx")
 summary(ciudades)
 str(ciudades)
 View(ciudades)
+#rownames(ciudades) = ciudades$CIUDADES
 ```
 
 Se realizaràn los distintos ACP con las variables de RH e INFRA
 
-```{r setup, include=FALSE}
+```{r}
 #base de datos RH+INFRA
-ciudadest<-ciudades[,c(2:15,21:30)]
+ciudadest<-ciudades[,c(1:15,21:30)]
+rownames(ciudadest) = ciudades$CIUDADES
 str(ciudadest)
 View(ciudadest)
 
-?PCA
 ```
 
 PRIMER PUNTO
 
-```{r setup, include=FALSE}
+```{r}
 #ACP todas las variables que le corresponden####
+# Ahora convierte esa columna en rownames
+ciudadest <- column_to_rownames(ciudadest, var = "CIUDADES")
 acp1<-PCA(ciudadest,ncp = 7)
+PCA(ciudadest,ncp = 7,axes = c(2,3))
+for (i in 1:7) {
+  if (i+1<=7) {
+    PCA(ciudadest,ncp = 7,axes = c(i,i+1))
+  }
+}
+plot(acp1$ind$coord[, 1:2], type = "n")
+text(acp1$ind$coord[, 1:2], labels = rownames(ciudadest), cex = 0.8)
+```
 
+
+
+
+```{r}
 #contiene los auto valores correspondientes a los componentes principales
 acp1$eig
 
@@ -96,21 +106,63 @@ acp1$var$cor
 #cosenos cuadrados de las variables
 acp1$var$cos2
 
+acp1$ind$cos2
 ```
 Gràficos primer punto 
 
-```{r setup, include=FALSE}
+```{r}
 
 #  Gráfico de individuos 
-G11<-fviz_pca_ind(acp1,
+G11<-fviz_pca_ind(acp1, geom = 'text',
              col.ind = "cos2",  # calidad de representación
-             gradient.cols = c("darkgreen", "#E7B800", "#FC4E07"),
+             gradient.cols = c("darkgreen",  "#FC4E07"),
              repel = TRUE
 )
 G11
 ```
+```{r}
+# Supongamos que 'acp1' es el resultado de tu análisis PCA
+# y que 'otro_dataframe' es el otro dataframe con el que quieres asociar los individuos.
+# Este 'otro_dataframe' debería tener al menos una columna que corresponda
+# al número de fila o a algún identificador de los individuos en 'ciudadest'.
+# Asumiremos que esta columna se llama 'ID_Individuo'.
 
-```{r setup, include=FALSE}
+# 1. Obtener la matriz de cosenos cuadrados de los individuos
+cos2_ind <- as.data.frame(acp1$ind$cos2)
+
+# 2. Crear una columna con el número de fila (que actuará como ID inicial)
+#cos2_ind <- cos2_ind %>%
+ # mutate(Fila = row_number())
+
+# 3. Crear una función para obtener los 3 valores más altos y sus IDs por dimensión
+#obtener_top_3 <- function(df, dimension) {
+#  top_3 <- df %>%
+#    select(Fila, {{ dimension }}) %>%
+#    arrange(desc({{ dimension }})) %>%
+#    head(3) %>%
+#    rename(!!dimension := {{ dimension }}) # Mantener el nombre de la dimensión
+#  return(top_3)
+#}
+
+# 4. Obtener los nombres de las dimensiones (componentes principales)
+#nombres_dimensiones <- names(cos2_ind)[!names(cos2_ind) == "Fila"]
+
+# 5. Aplicar la función a cada dimensión y combinar los resultados
+#lista_top_3 <- lapply(nombres_dimensiones, function(dim) obtener_top_3(cos2_ind, as.name(dim)))
+#tabla_top_3_cos2 <- bind_rows(lista_top_3, .id = "Dimension")
+
+# 6. Unir con el otro dataframe para obtener el ID deseado
+# Asegúrate de que la columna 'ID_Individuo' en 'otro_dataframe'
+# se corresponde con el número de fila en el orden original de tus datos 'ciudadest'.
+#tabla_final <- tabla_top_3_cos2 %>%
+ # left_join(otro_dataframe, by = c("Fila" = "ID_Individuo")) %>%
+  #select(Dimension, Fila, ID_Individuo, everything()) # Reorganizar columnas
+
+# Imprimir la tabla resultante
+#print(tabla_final)
+```
+
+```{r}
 
 G12<-fviz_pca_var(acp1,
                   col.var = 'red',
@@ -122,22 +174,35 @@ G12<-fviz_pca_var(acp1,
 G12
 ```
 
-```{r setup, include=FALSE}
+```{r}
 
 
 # 6. Biplot (variables + individuos)
 G13<-fviz_pca_biplot(acp1,
-                     col.ind = "red",
+                  col.ind = "cos2",
+                  gradient.cols = c("darkgreen",  "red"),
                      col.var = "darkblue",
                      select.var = list(contrib = 7),
+                  geom = "text",
                      repel = T,
                      col.quanti.sup = 'darkgrey'
 )
 G13
 ```
+Interpretación de las coordenadas:
+
+Al observar el plano factorial, tres ciudades se destacan por su lejanía respecto al origen: Bogotá (3), San Andrés (17) y Riohacha (16), lo cual indica que presentan características particulares frente a las variables consideradas.
+
+San Andrés (17) se ubica en el tercer cuadrante, con valores negativos en ambas dimensiones. Esto sugiere limitaciones importantes en infraestructura y educación (por ejemplo, baja población, baja cobertura educativa y débil acceso a internet y telefonía), explicables por su condición insular.
+
+Bogotá (3) aparece en el cuarto cuadrante, asociada positivamente con variables como INFRA_25 (líneas telefónicas) e INFRA_37 (internet), lo que refleja su alta conectividad y desarrollo tecnológico, coherente con su papel como capital.
+
+Riohacha (16) se encuentra en el segundo cuadrante, con una fuerte relación negativa respecto a las variables de infraestructura tecnológica, lo que la posiciona como una de las ciudades más rezagadas en este aspecto.
+
 SEGUNDO PUNTO
 
-```{r setup, include=FALSE}
+
+```{r}
 
 acp2<-PCA(ciudadest,quanti.sup = c(1:14))
 #Solo las variables INFRA_25 a INFRA_38
@@ -180,21 +245,22 @@ sum(s2[,1])
 
 Gràficos punto#2:
 
-```{r setup, include=FALSE}
+```{r}
 
 #  Gráfico de individuos 
 G21<-fviz_pca_ind(acp2,
              col.ind = "cos2",  # calidad de representación
-             gradient.cols = c("darkgreen", "#E7B800", "#FC4E07"),
+             gradient.cols = c("darkgreen",  "red"),
              repel = TRUE
 )
 G21
 ```
 
-```{r setup, include=FALSE}
+```{r}
 
 G22<-fviz_pca_var(acp2,
-                  col.var = 'red',
+                  col.var = "darkblue",
+                  gradient.cols = c("darkgreen", "#E7B800", "red"),
                   alpha.var = 0.5,
                   repel = TRUE,
                   col.quanti.sup = 'darkgrey',
@@ -205,12 +271,13 @@ G22<-fviz_pca_var(acp2,
 G22
 ```
 
-```{r setup, include=FALSE}
+```{r}
 
 
 
 G23<-fviz_pca_biplot(acp2,
-                     col.ind = "red",
+                     col.ind = "cos2",
+                     gradient.cols = c("darkgreen", "red"),
                      col.var = "darkblue",
                      repel = T,
                      col.quanti.sup = 'darkgrey',
@@ -220,11 +287,17 @@ G23<-fviz_pca_biplot(acp2,
 G23
 ```
 
-(resaltar 3 (bogota ) 16 (riohacha) y 17 (san andres ))
+Al revisar las coordenadas 3 individuos resaltan al ojo, Bogotá (3), San Andrés (17) y Riohacha (16) por ser los individuos más alejados del origen de nuestro plano, esto nos indica singularidades y posibles aspectos a destacar de estás ciudades.
+
+Al revisar a San Andrés vemos que este guarda una relación negativa con las variables INFRA 27/28 ( acueducto y alcantarillado cada 10000 habitantes) esto explicable fácilmente gracias a su baja población y su geografía de isla que dificulta la construcción de infraestructura pública como alcantarillado.
+
+Por el lado de la capital vemos su   alto posicionamiento en la dimensión 2, y a pesar que existe una relación destacable con INFRA 37/25 (clientes de internet y líneas telefónicas cada 10000 habitantes), el rasgo más importante de este individuo es su alta  posición en el eje Y, explicada ()en parte gracias a la variable de carga aérea (INFRA 33) dónde Bogota es lider seguido de cerca de San Andrés. 
+
+En el tercer cuadrante encontramos a Riohacha, el cual es representado de manera negativa con respecto a nuestras  variables de telecomunicaciones siendo este el individuo mas destacable del lado negativo del eje X
 
 TERCER PUNTO
 
-```{r setup, include=FALSE}
+```{r}
 acp3<-PCA(ciudadest,quanti.sup = c(15:24),ncp = 6)
 #Esto hace lo opuesto: trata las variables de
 #infraestructura (15 a 24) como suplementarias y
@@ -260,20 +333,21 @@ all_vars3 <- c(top5_vars3, sup_vars3)
 
 
 ```
+
 Gràficos punto #3
 
-```{r setup, include=FALSE}
+```{r}
 
 #  Gráfico de individuos 
 G31<-fviz_pca_ind(acp3,
              col.ind = "cos2",  # calidad de representación
-             gradient.cols = c("darkgreen", "#E7B800", "#FC4E07"),
+             gradient.cols = c("darkgreen",  "#FC4E07"),
              repel = TRUE
 )
 G31
 ```
 
-```{r setup, include=FALSE}
+```{r}
 
 G32<-fviz_pca_var(acp3,
                   col.var = 'red',
@@ -286,14 +360,21 @@ G32<-fviz_pca_var(acp3,
 
 G32
 ```
-```{r setup, include=FALSE}
+```{r}
 G33<-fviz_pca_biplot(acp3,
-                     col.ind = "red",
+                  col.ind = "cos2",
+                  gradient.cols = c("darkgreen", "red"),
                      col.var = "darkblue",
                      repel = T,
                      col.quanti.sup = 'darkgrey',
                      select.var = list(name =c(all_vars3)),
+                  geom = "text",
             title = 'Biplot'
 )
 G33
 ```
+San Andrés (17) se ubica en el tercer cuadrante con valores negativos en ambas dimensiones. Esta posición sugiere un bajo desempeño general, especialmente en infraestructura digital (INFRA_38, internet) y telecomunicaciones. Esto es coherente con su geografía insular y limitada escala urbana.
+
+Bogotá (3) se encuentra en el segundo cuadrante, fuertemente asociada a variables como RH_7 (educación superior) y RH_1 (población), reflejando su liderazgo en aspectos demográficos y educativos.
+
+Riohacha (16) se sitúa en el cuadrante superior derecho, destacándose por su fuerte asociación con RH_5 (analfabetismo) y RH_2 (crecimiento poblacional), lo que sugiere desafíos importantes en términos de desarrollo humano, a pesar de un crecimiento demográfico activo.
