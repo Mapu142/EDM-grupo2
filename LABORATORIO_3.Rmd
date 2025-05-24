@@ -121,8 +121,8 @@ G11
 En el gráfico podemos observar que destacan 4 ciudades, San Andrés, Riohacha, Valledupar y Bucaramanga, lo que da a entender que la mayor parte de variabilidad de esas ciudades esta siendo explicada por las componentes 1 y 2 (Dim1 y Dim2), además también se puede ver por cuál de las dimensiones parecen ser mejor representadas, por ejemplo, Valledupar y Bucaramanga parecen estar mejor representados por la componente 1 que San Andrés y Riohacha, los cuales parecen estar mejor respresentados por la componente 2
 
 ```{r}
-cos2_ind <- as.data.frame(acp1$ind$cos2)
-cos2_ind_dim1 <- cos2_ind %>% select(Dim.1,Dim.2) %>% mutate(cos2_total = rowSums(across(everything()))) %>% 
+cos2_ind_1 <- as.data.frame(acp1$ind$cos2)
+cos2_ind_1_dim1 <- cos2_ind_1 %>% select(Dim.1,Dim.2) %>% mutate(cos2_total = rowSums(across(everything()))) %>% 
      arrange(desc(cos2_total))
 
 ```
@@ -136,6 +136,35 @@ A continuación se podrán ver los valores de los primeros 4 $cos^{2}$ totales m
 | Bucaramanga| 0.54| 0.00| 0.54 |
 Como se mencionó anteriormente hay ciudades que destacan por componentes.
 
+```{r}
+# Crear data frame con la dimensión de mayor cos2 por ciudad
+tabla_max_cos2 <- cos2_ind_1 %>%
+  as.data.frame() %>%
+  mutate(
+    ciudad = rownames(.),
+    mejor_componente = colnames(cos2_ind_1)[max.col(., ties.method = "first")],
+    max_cos2 = apply(., 1, max)
+  ) %>%
+  select(ciudad, mejor_componente, max_cos2)
+tabla_max_cos2
+```
+A continuación una tabla que dice cuantas veces la componente represento mejor al individuo, es decir la componente que tenía el $cos^{2}$ más alto entre todas las componentes.
+```{r}
+tabla_max_cos2 %>% group_by(mejor_componente) %>% summarise(conteo=n()) %>% arrange(desc(conteo))
+
+```
+| Mejor componente     | Conteo|
+|:-------------|:----------------------: |
+| Dim.1 | 9 | 
+| Dim.2 | 2 |
+| Dim.3 | 3 |
+| Dim.4 | 2 |
+| Dim.5 | 2 |
+| Dim.6 | 3 |
+
+Podemos ver que la componente 1 que explica aproximadamente el 25.6% de variabilidad de la población es la misma que logra representar mejor a 9 ciudades de 22 en total. 
+
+Aunque las componentes 3,5,6 individualmente expliquen un porcentaje menor que las componentes 1 y 2, en la tabla se evidencia que hay individuos que están mejor explicados y representados en estos componentes menores.
 ```{r}
 
 G12<-fviz_pca_var(acp1,
@@ -181,7 +210,9 @@ acp2<-PCA(ciudadest,quanti.sup = c(1:14))
 #Las variables RH_* (1 a 14) no se usan para
 #construir los ejes principales, pero se proyectan
 #en el plano factorial para ser interpretadas.
+```
 
+```{r}
 #contiene los auto valores correspondientes a los componentes principales
 acp2$eig
 
@@ -226,6 +257,49 @@ G21<-fviz_pca_ind(acp2,
 )
 G21
 ```
+En el gráfico podemos observar que destacan 3 ciudades, Bogotá,D.C., Riohacha y Valledupar, lo que da a entender que la mayor parte de variabilidad de esas ciudades esta siendo explicada por las componentes 1 y 2 (Dim1 y Dim2), además también se puede ver por cuál de las dimensiones parecen ser mejor representadas, por ejemplo, Valledupar y Riohacha parecen estar mejor representados por la componente 1 que San Bogotá,D.C., la cual parece estar mejor respresenta por la componente 2
+
+```{r}
+cos2_ind_2 <- as.data.frame(acp2$ind$cos2)
+cos2_ind_2_dim1 <- cos2_ind_2 %>% select(Dim.1,Dim.2) %>% mutate(cos2_total = rowSums(across(everything()))) %>% 
+     arrange(desc(cos2_total))
+
+```
+A continuación se podrán ver los valores de los primeros 3 $cos^{2}$ totales más altos:
+
+| Ciudad       | $cos^{2}$ Dim.1 | $cos^{2}$ Dim.2 | $cos^{2}$ total |
+|:-------------|:----------------------: |:----------------------: |:----------------------: |
+| Riohacha     | 0.77| 0.04| 0.81 |
+| Bogotá, D.C. | 0.04| 0.75| 0.79 |
+| Valledupar   | 0.71| 0.08| 0.79 |
+Como se mencionó anteriormente hay ciudades que destacan por componentes.
+
+```{r}
+# Crear data frame con la dimensión de mayor cos2 por ciudad
+tabla_max_cos2_2 <- cos2_ind_2 %>%
+  as.data.frame() %>%
+  mutate(
+    ciudad = rownames(.),
+    mejor_componente = colnames(cos2_ind_2)[max.col(., ties.method = "first")],
+    max_cos2 = apply(., 1, max)
+  ) %>%
+  select(ciudad, mejor_componente, max_cos2)
+tabla_max_cos2_2
+```
+A continuación una tabla que dice cuantas veces la componente represento mejor al individuo, es decir la componente que tenía el $cos^{2}$ más alto entre todas las componentes.
+```{r}
+tabla_max_cos2_2 %>% group_by(mejor_componente) %>% summarise(conteo=n()) %>% arrange(desc(conteo))
+
+```
+| Mejor componente     | Conteo|
+|:-------------|:----------------------: |
+| Dim.1 | 11 | 
+| Dim.2 | 5 |
+| Dim.3 | 2 |
+| Dim.4 | 2 |
+| Dim.5 | 2 |
+
+Podemos ver que la componente 1 que explica aproximadamente el 37.4% de variabilidad de la población es la misma que logra representar mejor a 11 ciudades de 22 en total, es decir a la mitad. Podemos ver que en los siguientes componentes va disminuyendo la cantidad de individuos que son mejor representados dentro de estos a comparación de los demás. 
 
 ```{r}
 
@@ -273,7 +347,9 @@ acp3<-PCA(ciudadest,quanti.sup = c(15:24),ncp = 6)
 #Esto hace lo opuesto: trata las variables de
 #infraestructura (15 a 24) como suplementarias y
 #las variables RH (1 a 14) como activas.
+```
 
+```{r}
 #contiene los auto valores correspondientes a los componentes principales
 acp3$eig
 
@@ -317,7 +393,51 @@ G31<-fviz_pca_ind(acp3,
 )
 G31
 ```
+En el gráfico podemos observar que destacan 4 ciudades, San Andrés, Bogotá,D.C., Riohacha y Valledupar, lo que da a entender que la mayor parte de variabilidad de esas ciudades esta siendo explicada por las componentes 1 y 2 (Dim1 y Dim2), además también se puede ver por cuál de las dimensiones parecen ser mejor representadas, por ejemplo, Valledupar y Riohacha parecen estar mejor representados por la componente 1 que San Bogotá,D.C., la cual parece estar mejor respresenta por la componente 2
 
+```{r}
+cos2_ind_3 <- as.data.frame(acp3$ind$cos2)
+cos2_ind_3_dim1 <- cos2_ind_3 %>% select(Dim.1,Dim.2) %>% mutate(cos2_total = rowSums(across(everything()))) %>% 
+     arrange(desc(cos2_total))
+
+```
+A continuación se podrán ver los valores de los primeros 3 $cos^{2}$ totales más altos:
+
+| Ciudad       | $cos^{2}$ Dim.1 | $cos^{2}$ Dim.2 | $cos^{2}$ total |
+|:-------------|:----------------------: |:----------------------: |:----------------------: |
+| Riohacha     | 0.75| 0.03| 0.78 |
+| Bogotá, D.C. | 0.21| 0.45| 0.66 |
+| San Andrés   | 0.10| 0.45| 0.55 |
+| Valledupar   | 0.48| 0.05| 0.53 |
+Como se mencionó anteriormente hay ciudades que destacan por componentes.
+
+```{r}
+# Crear data frame con la dimensión de mayor cos2 por ciudad
+tabla_max_cos2_3 <- cos2_ind_3 %>%
+  as.data.frame() %>%
+  mutate(
+    ciudad = rownames(.),
+    mejor_componente = colnames(cos2_ind_3)[max.col(., ties.method = "first")],
+    max_cos2 = apply(., 1, max)
+  ) %>%
+  select(ciudad, mejor_componente, max_cos2)
+tabla_max_cos2_3
+```
+A continuación una tabla que dice cuantas veces la componente represento mejor al individuo, es decir la componente que tenía el $cos^{2}$ más alto entre todas las componentes.
+```{r}
+tabla_max_cos2_3 %>% group_by(mejor_componente) %>% summarise(conteo=n()) %>% arrange(desc(conteo))
+
+```
+| Mejor componente     | Conteo|
+|:-------------|:----------------------: |
+| Dim.1 | 7 | 
+| Dim.2 | 4 |
+| Dim.3 | 3 |
+| Dim.4 | 3 |
+| Dim.5 | 2 |
+| Dim.6 | 3 |
+
+Podemos ver que la componente 1 que explica aproximadamente el 25.5% de variabilidad de la población es la misma que logra representar mejor a 7 ciudades de 22 en total. Podemos ver que en los siguientes componentes va disminuyendo la cantidad de individuos que son mejor representados dentro de estos a comparación de los demás, aunque podemos ver que a pesar de que el componente 6 explica menos variabilidad de la población que el componente 5, logra explicar y representar más individuos que este.
 ```{r}
 
 G32<-fviz_pca_var(acp3,
