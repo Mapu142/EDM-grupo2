@@ -45,19 +45,17 @@ library(tibble)
 library(sqldf)
 #base de datos
 ciudades <- read_xlsx("Ciudades.xlsx")
-summary(ciudades)
-str(ciudades)
+#summary(ciudades)
 View(ciudades)
-#rownames(ciudades) = ciudades$CIUDADES
 ```
 
-Se realizaràn los distintos ACP con las variables de RH e INFRA
+Se realizarán los distintos ACP con las variables de RH e INFRA
 
 ```{r}
 #base de datos RH+INFRA
 ciudadest<-ciudades[,c(1:15,21:30)]
-rownames(ciudadest) = ciudades$CIUDADES
-str(ciudadest)
+# Ahora convierte esa columna en rownames
+ciudadest <- column_to_rownames(ciudadest, var = "CIUDADES")
 View(ciudadest)
 
 ```
@@ -66,35 +64,31 @@ PRIMER PUNTO
 
 ```{r}
 #ACP todas las variables que le corresponden####
-# Ahora convierte esa columna en rownames
-ciudadest <- column_to_rownames(ciudadest, var = "CIUDADES")
 acp1<-PCA(ciudadest,ncp = 7)
-PCA(ciudadest,ncp = 7,axes = c(2,3))
-for (i in 1:7) {
-  if (i+1<=7) {
-    PCA(ciudadest,ncp = 7,axes = c(i,i+1))
-  }
-}
-plot(acp1$ind$coord[, 1:2], type = "n")
-text(acp1$ind$coord[, 1:2], labels = rownames(ciudadest), cex = 0.8)
+
 ```
 
 
 
 
 ```{r}
-#contiene los auto valores correspondientes a los componentes principales
+# Contiene los auto valores correspondientes a los componentes principales
 acp1$eig
-
-#al sumar la columna de los eigenvalue da 24
-sum(acp1$eig[,1])
-
-#la coluna de porcentages de varianza acumulados
-#nos muestra que tan importantes son los primeros componentes
-# y es notable como con los primeros 7 ya se acumula
-# el 83 porciento de la varianza
+# El 83 porciento de la varianza
 acp1$eig[,3]
 
+```
+Siguiendo el criterio de los valores propios mayores a 1, se obtienen 7 componentes principales, de las cuales explican un 83% de la varianza total. 
+
+Por otro lado la suma de los valores propios de estos componente es igual al número de variables que estamos manejando.
+
+```{r}
+#al sumar la columna de los eigenvalue da 24
+sum(acp1$eig[,1])
+```
+
+
+```{r}
 #coordenadas de las variables
 acp1$var$coord
 
@@ -103,7 +97,10 @@ acp1$var$coord
 acp1$var$cor
 #basicamente estas covarianzas nos habla de como las variables
 #se relacionan con los factores y en que medida los construye
+```
 
+
+```{r}
 #cosenos cuadrados de las variables
 acp1$var$cos2
 
@@ -121,47 +118,23 @@ G11<-fviz_pca_ind(acp1, geom = 'text',
 )
 G11
 ```
+En el gráfico podemos observar que destacan 4 ciudades, San Andrés, Riohacha, Valledupar y Bucaramanga, lo que da a entender que la mayor parte de variabilidad de esas ciudades esta siendo explicada por las componentes 1 y 2 (Dim1 y Dim2), además también se puede ver por cuál de las dimensiones parecen ser mejor representadas, por ejemplo, Valledupar y Bucaramanga parecen estar mejor representados por la componente 1 que San Andrés y Riohacha, los cuales parecen estar mejor respresentados por la componente 2
+
 ```{r}
-# Supongamos que 'acp1' es el resultado de tu análisis PCA
-# y que 'otro_dataframe' es el otro dataframe con el que quieres asociar los individuos.
-# Este 'otro_dataframe' debería tener al menos una columna que corresponda
-# al número de fila o a algún identificador de los individuos en 'ciudadest'.
-# Asumiremos que esta columna se llama 'ID_Individuo'.
-
-# 1. Obtener la matriz de cosenos cuadrados de los individuos
 cos2_ind <- as.data.frame(acp1$ind$cos2)
+cos2_ind_dim1 <- cos2_ind %>% select(Dim.1,Dim.2) %>% mutate(cos2_total = rowSums(across(everything()))) %>% 
+     arrange(desc(cos2_total))
 
-# 2. Crear una columna con el número de fila (que actuará como ID inicial)
-#cos2_ind <- cos2_ind %>%
- # mutate(Fila = row_number())
-
-# 3. Crear una función para obtener los 3 valores más altos y sus IDs por dimensión
-#obtener_top_3 <- function(df, dimension) {
-#  top_3 <- df %>%
-#    select(Fila, {{ dimension }}) %>%
-#    arrange(desc({{ dimension }})) %>%
-#    head(3) %>%
-#    rename(!!dimension := {{ dimension }}) # Mantener el nombre de la dimensión
-#  return(top_3)
-#}
-
-# 4. Obtener los nombres de las dimensiones (componentes principales)
-#nombres_dimensiones <- names(cos2_ind)[!names(cos2_ind) == "Fila"]
-
-# 5. Aplicar la función a cada dimensión y combinar los resultados
-#lista_top_3 <- lapply(nombres_dimensiones, function(dim) obtener_top_3(cos2_ind, as.name(dim)))
-#tabla_top_3_cos2 <- bind_rows(lista_top_3, .id = "Dimension")
-
-# 6. Unir con el otro dataframe para obtener el ID deseado
-# Asegúrate de que la columna 'ID_Individuo' en 'otro_dataframe'
-# se corresponde con el número de fila en el orden original de tus datos 'ciudadest'.
-#tabla_final <- tabla_top_3_cos2 %>%
- # left_join(otro_dataframe, by = c("Fila" = "ID_Individuo")) %>%
-  #select(Dimension, Fila, ID_Individuo, everything()) # Reorganizar columnas
-
-# Imprimir la tabla resultante
-#print(tabla_final)
 ```
+A continuación se podrán ver los valores de los primeros 4 $cos^{2}$ totales más altos:
+
+| Ciudad     | $cos^{2}$ Dim.1 | $cos^{2}$ Dim.2 | $cos^{2}$ total |
+|:-------------|:----------------------: |:----------------------: |:----------------------: |
+| San Andrés | 0.09| 0.81| 0.90 | 
+| Riohacha   | 0.69| 0.08| 0.77 |
+| Valledupar | 0.62| 0.02| 0.64 |
+| Bucaramanga| 0.54| 0.00| 0.54 |
+Como se mencionó anteriormente hay ciudades que destacan por componentes.
 
 ```{r}
 
