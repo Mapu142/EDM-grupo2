@@ -98,6 +98,7 @@ acp1$eig[,3]
 #coordenadas de las variables
 acp1$var$coord
 
+
 #correlaciones variable factor
 acp1$var$cor
 #basicamente estas covarianzas nos habla de como las variables
@@ -189,6 +190,14 @@ G13<-fviz_pca_biplot(acp1,
 )
 G13
 ```
+Al observar el plano, tres ciudades se destacan por su lejanía respecto al origen: Bogotá (3), San Andrés (17) y Riohacha (16), lo cual indica que presentan características particulares frente a las variables consideradas.
+
+San Andrés (17) se ubica en el tercer cuadrante, con valores negativos en ambas dimensiones. Esto sugiere limitaciones importantes en infraestructura y educación (por ejemplo, baja población, baja cobertura educativa y débil acceso a internet y telefonía), explicables por su condición insular.
+
+Bogotá (3) aparece en el cuarto cuadrante, asociada positivamente con variables como INFRA_25 (líneas telefónicas) e INFRA_37 (internet), lo que refleja su alta conectividad y desarrollo tecnológico, coherente con su papel como capital.
+
+Riohacha (16) se encuentra en el segundo cuadrante, con una fuerte relación negativa respecto a las variables de infraestructura tecnológica, lo que la posiciona como una de las ciudades más rezagadas en este aspecto.
+
 SEGUNDO PUNTO
 
 ```{r}
@@ -362,3 +371,10 @@ G33<-fviz_pca_biplot(acp3,
 )
 G33
 ```
+Para este punto destacan nuevamente tres ciudades por su ubicación alejada del origen: Bogotá (3), San Andrés (17) y Riohacha (16).
+
+San Andrés (17) se ubica en el tercer cuadrante con valores negativos en ambas dimensiones. Esta posición sugiere un bajo desempeño general, especialmente en infraestructura digital (INFRA_38, internet) y telecomunicaciones. Esto es coherente con su geografía insular y limitada escala urbana.
+
+Bogotá (3) se encuentra en el segundo cuadrante, fuertemente asociada a variables como RH_7 (educación superior) y RH_1 (población), reflejando su liderazgo en aspectos demográficos y educativos.
+
+Riohacha (16) se sitúa en el cuadrante superior derecho, destacándose por su fuerte asociación con RH_5 (analfabetismo) y RH_2 (crecimiento poblacional), lo que sugiere desafíos importantes en términos de desarrollo humano, a pesar de un crecimiento demográfico activo.
