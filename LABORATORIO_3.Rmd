@@ -18,8 +18,12 @@ editor_options:
 
 los comandos son (usenlo en la terminal, no en la consola):
 
-git pull origin main git add . git commit -m "comentario" git push
+git pull origin main es para actualizar 
+
+git add . git commit -m "comentario" git push
 origin Tu_rama
+
+es para hacer un cambio 
 
 hacen el pull request
 
