@@ -18,28 +18,23 @@ editor_options:
 
 los comandos son (usenlo en la terminal, no en la consola):
 
-git pull origin main es para actualizar 
+git pull origin main es para actualizar
 
-git add . git commit -m "comentario" git push
-origin Tu_rama
+git add . git commit -m "comentario" git push origin Tu_rama
 
-es para hacer un cambio 
+es para hacer un cambio
 
 hacen el pull request
-
 
 -se pasan a main local -git pull origin main -luego a su rama local -git
 merge main -git push origin su rama
 
-
-
-
-Laboratorio #2
+### **Laboratorio #2**
 
 Librerias y preliminares:
 
 ```{r}
-#librerias
+#librerias necesarias
 library(readxl)
 library(FactoMineR)
 library(ggplot2)
@@ -47,33 +42,73 @@ library(factoextra)
 library(dplyr)
 library(tibble)
 library(sqldf)
+
 #base de datos
 ciudades <- read_xlsx("Ciudades.xlsx")
-#summary(ciudades)
-View(ciudades)
 ```
 
-Se realizarán los distintos ACP con las variables de RH e INFRA
+Se realizarán los distintos ACP con las variables de RH e INFRA.
+
+| Nombres                                  | Abreviaturas RH |
+|------------------------------------------|-----------------|
+| Población de la ciudad                   | RH_1            |
+| Tasa de Crecimiento de la Población      | RH_2            |
+| Tasa de Ocupación                        | RH_3            |
+| Tasa Global de Participación             | RH_4            |
+| Analfabetismo Absoluto                   | RH_5            |
+| Cobertura bruta en primaria y secundaria | RH_6            |
+| Cobertura bruta en educación superior    | RH_7            |
+| Relación alumno-profesor                 | RH_8            |
+| Calidad de los colegios                  | RH_9            |
+| Capacitación para el trabajo             | RH_10           |
+| Cobertura en salud                       | RH_11           |
+| Mortalidad Infantil                      | RH_12           |
+| Delitos contra la formación sexual       | RH_13           |
+| Violencia Intrafamiliar                  | RH_14           |
+| Homicidios                               | RH_15           |
+| Secuestros                               | RH_16           |
+
+: Variables RH
+
+| Nombres | Abreviaturas INFRA |
+|------------------------------------|------------------------------------|
+| Líneas telefónica por cada 10.000 habitantes | INFRA_25 |
+| Energía Eléctrica por cada 10.000 habitantes | INFRA_26 |
+| Acueducto por cada 10.000 habitantes | INFRA_27 |
+| Alcantarillado por cada 10.000 habitantes | INFRA_28 |
+| Tarifa media de energía en la industria | INFRA_29 |
+| Gas Natural por cada 10.000 habitantes | INFRA_30 |
+| Número de camas por cada 10.000 habitantes | INFRA_31 |
+| Número de salas de hospitales y clinicas por cada 10.000 habitantes | INFRA_32 |
+| Carga aérea | INFRA_33 |
+| Distancia en Kilómetros ponderada a los principales mercados (Bogotá, Medellín, Cali y Barranquilla) | INFRA_34 |
+| \% de red vial pavimentada | INFRA_35 |
+| \% de vías pavimentadas sobre total de la superficie | INFRA_36 |
+| Número de clientes conmutados y dedicados de internet por cada 10.000 habitantes | INFRA_37 |
+| Proveedores de servicio de Internet por cada 10.000 habitantesundefined | INFRA_38 |
+
+: Variables INFRA
+
+Base de datos con las variables requeridas:
 
 ```{r}
 #base de datos RH+INFRA
 ciudadest<-ciudades[,c(1:15,21:30)]
 # Ahora convierte esa columna en rownames
 ciudadest <- column_to_rownames(ciudadest, var = "CIUDADES")
-View(ciudadest)
 
 ```
 
-PRIMER PUNTO
+#### Primer punto
+
+Utilizar la función PCA del paquete FactoMiner para realizar un ACP con
+todas las variables que le correspondieron.
 
 ```{r}
 #ACP todas las variables que le corresponden####
 acp1<-PCA(ciudadest,ncp = 7)
 
 ```
-
-
-
 
 ```{r}
 # Contiene los auto valores correspondientes a los componentes principales
@@ -82,15 +117,18 @@ acp1$eig
 acp1$eig[,3]
 
 ```
-Siguiendo el criterio de los valores propios mayores a 1, se obtienen 7 componentes principales, de las cuales explican un 83% de la varianza total. 
 
-Por otro lado la suma de los valores propios de estos componente es igual al número de variables que estamos manejando.
+Siguiendo el criterio de los valores propios mayores a 1, se obtienen 7
+componentes principales, de las cuales explican un 83% de la varianza
+total.
+
+Por otro lado la suma de los valores propios de estos componente es
+igual al número de variables que estamos manejando.
 
 ```{r}
 #al sumar la columna de los eigenvalue da 24
 sum(acp1$eig[,1])
 ```
-
 
 ```{r}
 #coordenadas de las variables
@@ -103,14 +141,14 @@ acp1$var$cor
 #se relacionan con los factores y en que medida los construye
 ```
 
-
 ```{r}
 #cosenos cuadrados de las variables
 acp1$var$cos2
 
 acp1$ind$cos2
 ```
-Gràficos primer punto 
+
+Gràficos primer punto
 
 ```{r}
 
@@ -122,7 +160,15 @@ G11<-fviz_pca_ind(acp1, geom = 'text',
 )
 G11
 ```
-En el gráfico podemos observar que destacan 4 ciudades, San Andrés, Riohacha, Valledupar y Bucaramanga, lo que da a entender que la mayor parte de variabilidad de esas ciudades esta siendo explicada por las componentes 1 y 2 (Dim1 y Dim2), además también se puede ver por cuál de las dimensiones parecen ser mejor representadas, por ejemplo, Valledupar y Bucaramanga parecen estar mejor representados por la componente 1 que San Andrés y Riohacha, los cuales parecen estar mejor respresentados por la componente 2
+
+En el gráfico podemos observar que destacan 4 ciudades, San Andrés,
+Riohacha, Valledupar y Bucaramanga, lo que da a entender que la mayor
+parte de variabilidad de esas ciudades esta siendo explicada por las
+componentes 1 y 2 (Dim1 y Dim2), además también se puede ver por cuál de
+las dimensiones parecen ser mejor representadas, por ejemplo, Valledupar
+y Bucaramanga parecen estar mejor representados por la componente 1 que
+San Andrés y Riohacha, los cuales parecen estar mejor respresentados por
+la componente 2
 
 ```{r}
 cos2_ind_1 <- as.data.frame(acp1$ind$cos2)
@@ -130,15 +176,19 @@ cos2_ind_1_dim1 <- cos2_ind_1 %>% select(Dim.1,Dim.2) %>% mutate(cos2_total = ro
      arrange(desc(cos2_total))
 
 ```
-A continuación se podrán ver los valores de los primeros 4 $cos^{2}$ totales más altos:
 
-| Ciudad     | $cos^{2}$ Dim.1 | $cos^{2}$ Dim.2 | $cos^{2}$ total |
-|:-------------|:----------------------: |:----------------------: |:----------------------: |
-| San Andrés | 0.09| 0.81| 0.90 | 
-| Riohacha   | 0.69| 0.08| 0.77 |
-| Valledupar | 0.62| 0.02| 0.64 |
-| Bucaramanga| 0.54| 0.00| 0.54 |
-Como se mencionó anteriormente hay ciudades que destacan por componentes.
+A continuación se podrán ver los valores de los primeros 4 $cos^{2}$
+totales más altos:
+
+| Ciudad      | $cos^{2}$ Dim.1 | $cos^{2}$ Dim.2 | $cos^{2}$ total |
+|:------------|:---------------:|:---------------:|:---------------:|
+| San Andrés  |      0.09       |      0.81       |      0.90       |
+| Riohacha    |      0.69       |      0.08       |      0.77       |
+| Valledupar  |      0.62       |      0.02       |      0.64       |
+| Bucaramanga |      0.54       |      0.00       |      0.54       |
+
+Como se mencionó anteriormente hay ciudades que destacan por
+componentes.
 
 ```{r}
 # Crear data frame con la dimensión de mayor cos2 por ciudad
@@ -152,23 +202,34 @@ tabla_max_cos2 <- cos2_ind_1 %>%
   select(ciudad, mejor_componente, max_cos2)
 tabla_max_cos2
 ```
-A continuación una tabla que dice cuantas veces la componente represento mejor al individuo, es decir la componente que tenía el $cos^{2}$ más alto entre todas las componentes.
+
+A continuación una tabla que dice cuantas veces la componente represento
+mejor al individuo, es decir la componente que tenía el $cos^{2}$ más
+alto entre todas las componentes.
+
 ```{r}
 tabla_max_cos2 %>% group_by(mejor_componente) %>% summarise(conteo=n()) %>% arrange(desc(conteo))
 
 ```
-| Mejor componente     | Conteo|
-|:-------------|:----------------------: |
-| Dim.1 | 9 | 
-| Dim.2 | 2 |
-| Dim.3 | 3 |
-| Dim.4 | 2 |
-| Dim.5 | 2 |
-| Dim.6 | 3 |
 
-Podemos ver que la componente 1 que explica aproximadamente el 25.6% de variabilidad de la población es la misma que logra representar mejor a 9 ciudades de 22 en total. 
+| Mejor componente | Conteo |
+|:-----------------|:------:|
+| Dim.1            |   9    |
+| Dim.2            |   2    |
+| Dim.3            |   3    |
+| Dim.4            |   2    |
+| Dim.5            |   2    |
+| Dim.6            |   3    |
 
-Aunque las componentes 3,5,6 individualmente expliquen un porcentaje menor que las componentes 1 y 2, en la tabla se evidencia que hay individuos que están mejor explicados y representados en estos componentes menores.
+Podemos ver que la componente 1 que explica aproximadamente el 25.6% de
+variabilidad de la población es la misma que logra representar mejor a 9
+ciudades de 22 en total.
+
+Aunque las componentes 3,5,6 individualmente expliquen un porcentaje
+menor que las componentes 1 y 2, en la tabla se evidencia que hay
+individuos que están mejor explicados y representados en estos
+componentes menores.
+
 ```{r}
 
 G12<-fviz_pca_var(acp1,
@@ -196,15 +257,33 @@ G13<-fviz_pca_biplot(acp1,
 )
 G13
 ```
-Al observar el plano, tres ciudades se destacan por su lejanía respecto al origen: Bogotá (3), San Andrés (17) y Riohacha (16), lo cual indica que presentan características particulares frente a las variables consideradas.
 
-San Andrés (17) se ubica en el tercer cuadrante, con valores negativos en ambas dimensiones. Esto sugiere limitaciones importantes en infraestructura y educación (por ejemplo, baja población, baja cobertura educativa y débil acceso a internet y telefonía), explicables por su condición insular.
+Al observar el plano, tres ciudades se destacan por su lejanía respecto
+al origen: Bogotá (3), San Andrés (17) y Riohacha (16), lo cual indica
+que presentan características particulares frente a las variables
+consideradas.
 
-Bogotá (3) aparece en el cuarto cuadrante, asociada positivamente con variables como INFRA_25 (líneas telefónicas) e INFRA_37 (internet), lo que refleja su alta conectividad y desarrollo tecnológico, coherente con su papel como capital.
+San Andrés (17) se ubica en el tercer cuadrante, con valores negativos
+en ambas dimensiones. Esto sugiere limitaciones importantes en
+infraestructura y educación (por ejemplo, baja población, baja cobertura
+educativa y débil acceso a internet y telefonía), explicables por su
+condición insular.
 
-Riohacha (16) se encuentra en el segundo cuadrante, con una fuerte relación negativa respecto a las variables de infraestructura tecnológica, lo que la posiciona como una de las ciudades más rezagadas en este aspecto.
+Bogotá (3) aparece en el cuarto cuadrante, asociada positivamente con
+variables como INFRA_25 (líneas telefónicas) e INFRA_37 (internet), lo
+que refleja su alta conectividad y desarrollo tecnológico, coherente con
+su papel como capital.
 
-SEGUNDO PUNTO
+Riohacha (16) se encuentra en el segundo cuadrante, con una fuerte
+relación negativa respecto a las variables de infraestructura
+tecnológica, lo que la posiciona como una de las ciudades más rezagadas
+en este aspecto.
+
+#### Segundo punto
+
+Utilizar la función PCA del paquete FactoMiner para realizar un ACP de
+las variables especificas (INFRA) utilizando como ilustrativas las
+variables de Recursos Humanos (RH).
 
 ```{r}
 
@@ -261,7 +340,14 @@ G21<-fviz_pca_ind(acp2,
 )
 G21
 ```
-En el gráfico podemos observar que destacan 3 ciudades, Bogotá,D.C., Riohacha y Valledupar, lo que da a entender que la mayor parte de variabilidad de esas ciudades esta siendo explicada por las componentes 1 y 2 (Dim1 y Dim2), además también se puede ver por cuál de las dimensiones parecen ser mejor representadas, por ejemplo, Valledupar y Riohacha parecen estar mejor representados por la componente 1 que San Bogotá,D.C., la cual parece estar mejor respresenta por la componente 2
+
+En el gráfico podemos observar que destacan 3 ciudades, Bogotá,D.C.,
+Riohacha y Valledupar, lo que da a entender que la mayor parte de
+variabilidad de esas ciudades esta siendo explicada por las componentes
+1 y 2 (Dim1 y Dim2), además también se puede ver por cuál de las
+dimensiones parecen ser mejor representadas, por ejemplo, Valledupar y
+Riohacha parecen estar mejor representados por la componente 1 que San
+Bogotá,D.C., la cual parece estar mejor respresenta por la componente 2
 
 ```{r}
 cos2_ind_2 <- as.data.frame(acp2$ind$cos2)
@@ -269,14 +355,18 @@ cos2_ind_2_dim1 <- cos2_ind_2 %>% select(Dim.1,Dim.2) %>% mutate(cos2_total = ro
      arrange(desc(cos2_total))
 
 ```
-A continuación se podrán ver los valores de los primeros 3 $cos^{2}$ totales más altos:
+
+A continuación se podrán ver los valores de los primeros 3 $cos^{2}$
+totales más altos:
 
 | Ciudad       | $cos^{2}$ Dim.1 | $cos^{2}$ Dim.2 | $cos^{2}$ total |
-|:-------------|:----------------------: |:----------------------: |:----------------------: |
-| Riohacha     | 0.77| 0.04| 0.81 |
-| Bogotá, D.C. | 0.04| 0.75| 0.79 |
-| Valledupar   | 0.71| 0.08| 0.79 |
-Como se mencionó anteriormente hay ciudades que destacan por componentes.
+|:-------------|:---------------:|:---------------:|:---------------:|
+| Riohacha     |      0.77       |      0.04       |      0.81       |
+| Bogotá, D.C. |      0.04       |      0.75       |      0.79       |
+| Valledupar   |      0.71       |      0.08       |      0.79       |
+
+Como se mencionó anteriormente hay ciudades que destacan por
+componentes.
 
 ```{r}
 # Crear data frame con la dimensión de mayor cos2 por ciudad
@@ -290,20 +380,29 @@ tabla_max_cos2_2 <- cos2_ind_2 %>%
   select(ciudad, mejor_componente, max_cos2)
 tabla_max_cos2_2
 ```
-A continuación una tabla que dice cuantas veces la componente represento mejor al individuo, es decir la componente que tenía el $cos^{2}$ más alto entre todas las componentes.
+
+A continuación una tabla que dice cuantas veces la componente represento
+mejor al individuo, es decir la componente que tenía el $cos^{2}$ más
+alto entre todas las componentes.
+
 ```{r}
 tabla_max_cos2_2 %>% group_by(mejor_componente) %>% summarise(conteo=n()) %>% arrange(desc(conteo))
 
 ```
-| Mejor componente     | Conteo|
-|:-------------|:----------------------: |
-| Dim.1 | 11 | 
-| Dim.2 | 5 |
-| Dim.3 | 2 |
-| Dim.4 | 2 |
-| Dim.5 | 2 |
 
-Podemos ver que la componente 1 que explica aproximadamente el 37.4% de variabilidad de la población es la misma que logra representar mejor a 11 ciudades de 22 en total, es decir a la mitad. Podemos ver que en los siguientes componentes va disminuyendo la cantidad de individuos que son mejor representados dentro de estos a comparación de los demás. 
+| Mejor componente | Conteo |
+|:-----------------|:------:|
+| Dim.1            |   11   |
+| Dim.2            |   5    |
+| Dim.3            |   2    |
+| Dim.4            |   2    |
+| Dim.5            |   2    |
+
+Podemos ver que la componente 1 que explica aproximadamente el 37.4% de
+variabilidad de la población es la misma que logra representar mejor a
+11 ciudades de 22 en total, es decir a la mitad. Podemos ver que en los
+siguientes componentes va disminuyendo la cantidad de individuos que son
+mejor representados dentro de estos a comparación de los demás.
 
 ```{r}
 
@@ -336,15 +435,34 @@ G23<-fviz_pca_biplot(acp2,
 G23
 ```
 
-Al revisar las coordenadas 3 individuos resaltan al ojo, Bogotá (3), San Andrés (17) y Riohacha (16) por ser los individuos más alejados del origen de nuestro plano, esto nos indica singularidades y posibles aspectos a destacar de estás ciudades.
+Al revisar las coordenadas 3 individuos resaltan al ojo, Bogotá (3), San
+Andrés (17) y Riohacha (16) por ser los individuos más alejados del
+origen de nuestro plano, esto nos indica singularidades y posibles
+aspectos a destacar de estás ciudades.
 
-Al revisar a San Andrés vemos que este guarda una relación negativa con las variables INFRA 27/28 ( acueducto y alcantarillado cada 10000 habitantes) esto explicable fácilmente gracias a su baja población y su geografía de isla que dificulta la construcción de infraestructura pública como alcantarillado.
+Al revisar a San Andrés vemos que este guarda una relación negativa con
+las variables INFRA 27/28 ( acueducto y alcantarillado cada 10000
+habitantes) esto explicable fácilmente gracias a su baja población y su
+geografía de isla que dificulta la construcción de infraestructura
+pública como alcantarillado.
 
-Por el lado de la capital vemos su   alto posicionamiento en la dimensión 2, y a pesar que existe una relación destacable con INFRA 37/25 (clientes de internet y líneas telefónicas cada 10000 habitantes), el rasgo más importante de este individuo es su alta  posición en el eje Y, explicada en parte gracias a la variable de carga aérea (INFRA 33) dónde Bogota es lider seguido de cerca de San Andrés. 
+Por el lado de la capital vemos su alto posicionamiento en la dimensión
+2, y a pesar que existe una relación destacable con INFRA 37/25
+(clientes de internet y líneas telefónicas cada 10000 habitantes), el
+rasgo más importante de este individuo es su alta posición en el eje Y,
+explicada en parte gracias a la variable de carga aérea (INFRA 33) dónde
+Bogota es lider seguido de cerca de San Andrés.
 
-En el tercer cuadrante encontramos a Riohacha, el cual es representado de manera negativa con respecto a nuestras  variables de telecomunicaciones siendo este el individuo mas destacable del lado negativo del eje X
+En el tercer cuadrante encontramos a Riohacha, el cual es representado
+de manera negativa con respecto a nuestras variables de
+telecomunicaciones siendo este el individuo mas destacable del lado
+negativo del eje X
 
-TERCER PUNTO
+#### Tercer punto
+
+Utilizar la función PCA del paquete FactoMiner para realizar un ACP de
+las variables de Recursos Humanos (RH) utilizando como ilustrativas las
+que le correspondieron.
 
 ```{r}
 acp3<-PCA(ciudadest,quanti.sup = c(15:24),ncp = 6)
@@ -397,7 +515,14 @@ G31<-fviz_pca_ind(acp3,
 )
 G31
 ```
-En el gráfico podemos observar que destacan 4 ciudades, San Andrés, Bogotá,D.C., Riohacha y Valledupar, lo que da a entender que la mayor parte de variabilidad de esas ciudades esta siendo explicada por las componentes 1 y 2 (Dim1 y Dim2), además también se puede ver por cuál de las dimensiones parecen ser mejor representadas, por ejemplo, Valledupar y Riohacha parecen estar mejor representados por la componente 1 que San Bogotá,D.C., la cual parece estar mejor respresenta por la componente 2
+
+En el gráfico podemos observar que destacan 4 ciudades, San Andrés,
+Bogotá,D.C., Riohacha y Valledupar, lo que da a entender que la mayor
+parte de variabilidad de esas ciudades esta siendo explicada por las
+componentes 1 y 2 (Dim1 y Dim2), además también se puede ver por cuál de
+las dimensiones parecen ser mejor representadas, por ejemplo, Valledupar
+y Riohacha parecen estar mejor representados por la componente 1 que San
+Bogotá,D.C., la cual parece estar mejor respresenta por la componente 2
 
 ```{r}
 cos2_ind_3 <- as.data.frame(acp3$ind$cos2)
@@ -405,15 +530,19 @@ cos2_ind_3_dim1 <- cos2_ind_3 %>% select(Dim.1,Dim.2) %>% mutate(cos2_total = ro
      arrange(desc(cos2_total))
 
 ```
-A continuación se podrán ver los valores de los primeros 3 $cos^{2}$ totales más altos:
+
+A continuación se podrán ver los valores de los primeros 3 $cos^{2}$
+totales más altos:
 
 | Ciudad       | $cos^{2}$ Dim.1 | $cos^{2}$ Dim.2 | $cos^{2}$ total |
-|:-------------|:----------------------: |:----------------------: |:----------------------: |
-| Riohacha     | 0.75| 0.03| 0.78 |
-| Bogotá, D.C. | 0.21| 0.45| 0.66 |
-| San Andrés   | 0.10| 0.45| 0.55 |
-| Valledupar   | 0.48| 0.05| 0.53 |
-Como se mencionó anteriormente hay ciudades que destacan por componentes.
+|:-------------|:---------------:|:---------------:|:---------------:|
+| Riohacha     |      0.75       |      0.03       |      0.78       |
+| Bogotá, D.C. |      0.21       |      0.45       |      0.66       |
+| San Andrés   |      0.10       |      0.45       |      0.55       |
+| Valledupar   |      0.48       |      0.05       |      0.53       |
+
+Como se mencionó anteriormente hay ciudades que destacan por
+componentes.
 
 ```{r}
 # Crear data frame con la dimensión de mayor cos2 por ciudad
@@ -427,21 +556,34 @@ tabla_max_cos2_3 <- cos2_ind_3 %>%
   select(ciudad, mejor_componente, max_cos2)
 tabla_max_cos2_3
 ```
-A continuación una tabla que dice cuantas veces la componente represento mejor al individuo, es decir la componente que tenía el $cos^{2}$ más alto entre todas las componentes.
+
+A continuación una tabla que dice cuantas veces la componente represento
+mejor al individuo, es decir la componente que tenía el $cos^{2}$ más
+alto entre todas las componentes.
+
 ```{r}
 tabla_max_cos2_3 %>% group_by(mejor_componente) %>% summarise(conteo=n()) %>% arrange(desc(conteo))
 
 ```
-| Mejor componente     | Conteo|
-|:-------------|:----------------------: |
-| Dim.1 | 7 | 
-| Dim.2 | 4 |
-| Dim.3 | 3 |
-| Dim.4 | 3 |
-| Dim.5 | 2 |
-| Dim.6 | 3 |
 
-Podemos ver que la componente 1 que explica aproximadamente el 25.5% de variabilidad de la población es la misma que logra representar mejor a 7 ciudades de 22 en total. Podemos ver que en los siguientes componentes va disminuyendo la cantidad de individuos que son mejor representados dentro de estos a comparación de los demás, aunque podemos ver que a pesar de que el componente 6 explica menos variabilidad de la población que el componente 5, logra explicar y representar más individuos que este.
+| Mejor componente | Conteo |
+|:-----------------|:------:|
+| Dim.1            |   7    |
+| Dim.2            |   4    |
+| Dim.3            |   3    |
+| Dim.4            |   3    |
+| Dim.5            |   2    |
+| Dim.6            |   3    |
+
+Podemos ver que la componente 1 que explica aproximadamente el 25.5% de
+variabilidad de la población es la misma que logra representar mejor a 7
+ciudades de 22 en total. Podemos ver que en los siguientes componentes
+va disminuyendo la cantidad de individuos que son mejor representados
+dentro de estos a comparación de los demás, aunque podemos ver que a
+pesar de que el componente 6 explica menos variabilidad de la población
+que el componente 5, logra explicar y representar más individuos que
+este.
+
 ```{r}
 
 G32<-fviz_pca_var(acp3,
@@ -455,6 +597,7 @@ G32<-fviz_pca_var(acp3,
 
 G32
 ```
+
 ```{r}
 G33<-fviz_pca_biplot(acp3,
                   col.ind = "cos2",
@@ -468,10 +611,21 @@ G33<-fviz_pca_biplot(acp3,
 )
 G33
 ```
-Para este punto destacan nuevamente tres ciudades por su ubicación alejada del origen: Bogotá (3), San Andrés (17) y Riohacha (16).
 
-San Andrés (17) se ubica en el tercer cuadrante con valores negativos en ambas dimensiones. Esta posición sugiere un bajo desempeño general, especialmente en infraestructura digital (INFRA_38, internet) y telecomunicaciones. Esto es coherente con su geografía insular y limitada escala urbana.
+Para este punto destacan nuevamente tres ciudades por su ubicación
+alejada del origen: Bogotá (3), San Andrés (17) y Riohacha (16).
 
-Bogotá (3) se encuentra en el segundo cuadrante, fuertemente asociada a variables como RH_7 (educación superior) y RH_1 (población), reflejando su liderazgo en aspectos demográficos y educativos.
+San Andrés (17) se ubica en el tercer cuadrante con valores negativos en
+ambas dimensiones. Esta posición sugiere un bajo desempeño general,
+especialmente en infraestructura digital (INFRA_38, internet) y
+telecomunicaciones. Esto es coherente con su geografía insular y
+limitada escala urbana.
 
-Riohacha (16) se sitúa en el cuadrante superior derecho, destacándose por su fuerte asociación con RH_5 (analfabetismo) y RH_2 (crecimiento poblacional), lo que sugiere desafíos importantes en términos de desarrollo humano, a pesar de un crecimiento demográfico activo.
+Bogotá (3) se encuentra en el segundo cuadrante, fuertemente asociada a
+variables como RH_7 (educación superior) y RH_1 (población), reflejando
+su liderazgo en aspectos demográficos y educativos.
+
+Riohacha (16) se sitúa en el cuadrante superior derecho, destacándose
+por su fuerte asociación con RH_5 (analfabetismo) y RH_2 (crecimiento
+poblacional), lo que sugiere desafíos importantes en términos de
+desarrollo humano, a pesar de un crecimiento demográfico activo.
