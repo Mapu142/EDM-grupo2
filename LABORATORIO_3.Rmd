@@ -29,7 +29,7 @@ library(tibble)
 library(sqldf)
 
 #base de datos
-ciudades <- read_excel("C:/Users/juane/Downloads/ciudades original-filtrado-con-etiquetas.xlsx")
+ciudades <- read_excel("ciudades.xlsx")
 ```
 
 Se realizarán los distintos ACP con las variables de RH e INFRA.
@@ -245,7 +245,24 @@ ciudades de 22 en total.
 Aunque las componentes 3,5,6 individualmente expliquen un porcentaje
 menor que las componentes 1 y 2, en la tabla se evidencia que hay
 individuos que están mejor explicados y representados en estos
-componentes menores.
+componentes menores. A continuación se mostrarán las ciudades que estan siendo representadas por cada componente de forma descendente es decir, que la ciudad con mayor coseno dentro de este componente aparece enlistada en el primer lugar, la que le sigue en el segundo y así sucesivamente.
+```{r}
+tabla_max_cos2 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.1") %>% arrange(desc(max_cos2))
+tabla_max_cos2 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.2") %>% arrange(desc(max_cos2))
+tabla_max_cos2 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.3") %>% arrange(desc(max_cos2))
+tabla_max_cos2 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.4") %>% arrange(desc(max_cos2))
+tabla_max_cos2 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.5") %>% arrange(desc(max_cos2))
+tabla_max_cos2 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.6") %>% arrange(desc(max_cos2))
+```
+| Dimensión | Ciudades |
+|:-----------------|:------:|
+| Dim.1            |  Riohacha, Valledupar, Bucaramanga, Montería, Manizales, Santa Marta, Pereira, Cali, Medellín     |
+| Dim.2            |   San Andrés, Cúcuta.    |
+| Dim.3            |   Bogotá, Barranquilla, Popoyán.   |
+| Dim.4            |    Villavicencio, Armenia.   |
+| Dim.5            |   Neiva, Pasto, Tunja    |
+| Dim.6            |    Ibagué, Cartagena, Sincelejo.   |
+
 
 ```{r}
 
@@ -452,6 +469,22 @@ variabilidad de la población es la misma que logra representar mejor a
 11 ciudades de 22 en total, es decir a la mitad. Podemos ver que en los
 siguientes componentes va disminuyendo la cantidad de individuos que son
 mejor representados dentro de estos a comparación de los demás.
+```{r}
+tabla_max_cos2_2 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.1") %>% arrange(desc(max_cos2))
+tabla_max_cos2_2 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.2") %>% arrange(desc(max_cos2))
+tabla_max_cos2_2 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.3") %>% arrange(desc(max_cos2))
+tabla_max_cos2_2 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.4") %>% arrange(desc(max_cos2))
+tabla_max_cos2_2 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.5") %>% arrange(desc(max_cos2))
+```
+
+| Dimensión | Ciudades |
+|:-----------------|:------:|
+| Dim.1            |  Riohacha, Valledupar, Montería, Cartagena, Pereira, Manizales, Neiva, Cali, Bucaramanga, San Andrés.     |
+| Dim.2            |   Bogotá, Barranquilla, Cúcuta, Tunja, Popayán.    |
+| Dim.3            |   Medellín, Sincelejo.   |
+| Dim.4            |    Villavicencio, Ibagué.   |
+| Dim.5            |   Armenia, Pasto.    |
+
 
 ```{r}
 
@@ -665,6 +698,22 @@ dentro de estos a comparación de los demás, aunque podemos ver que a
 pesar de que el componente 6 explica menos variabilidad de la población
 que el componente 5, logra explicar y representar más individuos que
 este.
+```{r}
+tabla_max_cos2_3 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.1") %>% arrange(desc(max_cos2))
+tabla_max_cos2_3 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.2") %>% arrange(desc(max_cos2))
+tabla_max_cos2_3 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.3") %>% arrange(desc(max_cos2))
+tabla_max_cos2_3 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.4") %>% arrange(desc(max_cos2))
+tabla_max_cos2_3 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.5") %>% arrange(desc(max_cos2))
+tabla_max_cos2_3 %>% group_by(mejor_componente) %>% filter(mejor_componente=="Dim.6") %>% arrange(desc(max_cos2))
+```
+| Dimensión | Ciudades |
+|:-----------------|:------:|
+| Dim.1            |  Riohacha, Valledupar, Montería, Manizales, Bucaramanga, Popayán.    |
+| Dim.2            |   Medellín, Bogotá, San Andrés, Barranquilla.    |
+| Dim.3            |   Villavicencio, Santa Marta, Neiva.   |
+| Dim.4            |    Cartagena, Armenia, Tunja.   |
+| Dim.5            |    Sincelejo, Pereira.   |
+| Dim.6            |    Pasto, Ibagué, Cúcuta.    |
 
 ```{r}
 
@@ -711,3 +760,65 @@ Riohacha (16) se sitúa en el cuadrante superior derecho, destacándose
 por su fuerte asociación con RH_5 (analfabetismo) y RH_2 (crecimiento
 poblacional), lo que sugiere desafíos importantes en términos de
 desarrollo humano, a pesar de un crecimiento demográfico activo.
+
+### Comparación (PUNTO 4)
+Al comparar los tres análisis, podemos ver que:
+
+La dimensión o eje que más aporta varianza a los análisis se encuentra cuando las variables de recursos humanos son tomadas como suplementarias. Esto nos indica que las variables específicas de infraestructura son más representativas, debido a la gran varianza de estas variables entre las ciudades. Además, es el análisis con la menor cantidad de componentes principales, con solo cinco (de las cuales cuatro tienen correlaciones considerables con otros componentes principales).
+
+Naturalmente, se puede apreciar que ciudades como Neiva, Pereira o Manizales, si bien resaltan de manera positiva con respecto a variables de infraestructura, están realmente cercanas al promedio al analizar las variables de recursos humanos. En el caso contrario, Riohacha es un dato a resaltar a través de los tres gráficos, siempre ubicada y relacionada de manera cercana a las variables de crecimiento de la población y analfabetismo absoluto (aunque estas sean suplementarias en el segundo gráfico).
+
+De igual manera, podemos resaltar cómo secuestros y cobertura bruta en primaria y secundaria son dos variables que solo vemos presentes como componentes principales en el gráfico combinado de ambos conjuntos de variables (además de aparecer con una correlación negativa altamente considerable). Al realizar el análisis solamente con variables de recursos humanos, estas dos variables son “reemplazadas” por las variables de población, cobertura en educación superior y calidad de los colegios, con una correlación a resaltar entre las tres.
+
+En general, si bien la manera más fiel de realizar un análisis de las variables de infraestructura es al usar exclusivamente las variables de infraestructura, al emparejarlas con las variables de recursos humanos aún podemos encontrar correlaciones interesantes y ciudades atípicas con respecto al conjunto de variables.
+
+Es de notar que a pesar de que se mantienen este tipo de diferencias hay ciudades que resaltan sin importar de que punto sea, como lo son el ejemplo de riohacha, bogotá y san andrés los cuales presentan diferencias importantes con respecto al promedio de las otras ciudades(están muy alejadas siempre del centro). Esto se puede deber a que si se piensa desde la realidad, la infraestructura puede estar muy relacionada con el acceso a recursos humanos, por lo que tiene sentido que se mantengan ciertas ciudades sobresalientes
+
+las conclusiones pueden ser que siempre es necesario saber de lo que hablan nuestras variables para encontrar las formas mas efectivas de concentrar la información, tambien de la importancia de agrupar y hacer casos para ver cuales son las cosas que mas afectan y como terminan en los resultados finales 
+
+## Cosenos cuadrados
+De todas las componentes a pesar de que estamos tratando diferentes, hubo ciudades que se mantuvieron en la misma componente (no necesariamente en el mismo orden):
+```{r}
+library(dplyr)
+
+tabla_max_cos2 <- tabla_max_cos2 |>
+  rename(componente_pca1 = mejor_componente, cos2_pca1 = max_cos2)
+
+tabla_max_cos2_2 <- tabla_max_cos2_2 |>
+  rename(componente_pca2 = mejor_componente, cos2_pca2 = max_cos2)
+
+tabla_max_cos2_3 <- tabla_max_cos2_3 |>
+  rename(componente_pca3 = mejor_componente, cos2_pca3 = max_cos2)
+
+```
+```{r}
+pca_comparada <- tabla_max_cos2 |>
+  inner_join(tabla_max_cos2_2, by = "ciudad") |>
+  inner_join(tabla_max_cos2_3, by = "ciudad")
+pca_comparada <- pca_comparada |>
+  mutate(
+    mismo_componente = componente_pca1 == componente_pca2 &
+                       componente_pca1 == componente_pca3
+  )
+
+
+```
+
+| Dimensión | Ciudad       | Valor en el primer punto | Valor en el segundo punto | Valor en el tercer punto |
+|:----------|:-------------|-------------------------:|--------------------------:|-------------------------:|
+|           | Riohacha     | 0.6968575               | 0.7747932                | 0.7524178               |
+|           | Valledupar   | 0.6180702               | 0.7136357                | 0.4813210               |
+|           | Montería     | 0.4781262               | 0.5791771                | 0.4293558               |
+| Dim.1     | Manizales    | 0.4604778               | 0.4933737                | 0.4275987               |
+|           | Bucaramanga  | 0.5427632               | 0.4394121                | 0.3668279               |
+|           | Cali         | 0.3067947               | 0.4458738                | 0.2093450               |
+| Dim.6     | Ibagué       | 0.3851752               | Dim.4: 0.2941408         | 0.2901214               |
+En primer lugar, se evidencia que ciudades como Riohacha y Valledupar mantienen valores de coseno cuadrado consistentemente altos en los tres puntos de análisis, lo que sugiere que su posición relativa frente a los componentes principales es relativamente estable y que su estructura de datos es bien capturada en todos los casos. Esto coincide con el hecho de que Riohacha, por ejemplo, ya había sido identificada como una ciudad atípica en las proyecciones de los ejes principales por su relación con variables de crecimiento poblacional y analfabetismo.
+
+Por el contrario, otras ciudades como Cali y Bucaramanga presentan valores de coseno cuadrado comparativamente más bajos, especialmente en el tercer análisis, lo que podría interpretarse como una representación menos robusta en esos componentes. Esto sugiere que, dependiendo del conjunto de variables incluidas, la explicación de su variabilidad requiere más componentes principales o que su relación con las variables no es tan marcada.
+
+En el caso particular de Ibagué, se observa que en el segundo punto de análisis su componente dominante cambia (Dim.4), y su coseno cuadrado es más bajo en comparación con otras ciudades, lo que indicaría cierta variabilidad en su representación según el enfoque de análisis (infraestructura, recursos humanos o combinado).
+
+En general, los cosenos cuadrados altos implican que el modelo de componentes principales captura de forma satisfactoria la información de la ciudad en ese componente específico. El hecho de que varias ciudades mantengan altos valores en las tres perspectivas refuerza la idea de que ciertos patrones estructurales en los datos se preservan incluso al variar el conjunto de variables analizadas. Esto complementa la interpretación anterior de que existen ciudades con características particulares que sobresalen de manera consistente frente al promedio, como es el caso de Riohacha.
+
+
