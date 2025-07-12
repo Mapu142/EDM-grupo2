@@ -1,0 +1,53 @@
+---
+title: "LABORATORIO_4"
+author:
+  - Sergio Alejandro Buitrago Melo
+  - María Alejandra Cabra Arias
+  - María Paula Camargo Rincón
+  - Ana María Chacón Bello
+  - Sergio Alejandro Gaona Díaz
+  - Juan Esteban García Muete
+date: '2025-05-14'
+output: pdf_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+### **Laboratorio #4**
+
+```{r}
+
+```
+
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
