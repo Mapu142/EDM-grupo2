@@ -17,22 +17,50 @@ editor_options:
 ### **Laboratorio #4**
 
 ```{r}
+library(readr)
+ECC <- read_delim("ECC_completa_19426.csv", 
+    delim = ";", escape_double = FALSE, trim_ws = TRUE)
+View(ECC)
+```
+
+## Punto 1
+```{r}
+library(dplyr) # Para manejo de datos
+
+tabla_activa <- ECC %>% 
+  count(p17_b, p21) %>% 
+  tidyr::pivot_wider(names_from = p21, values_from = n, values_fill = 0)
+tabla_activa
+```
+
+## Punto 2
+```{r}
+library(dplyr) # Para manejo de datos
+
+tabla_suplementaria <- ECC %>% 
+  filter(!ciudad2 %in% c("Bogota", "Asuncion", "Montevideo")) %>% 
+  count(p17_b, ciudad2) %>% 
+  tidyr::pivot_wider(names_from = ciudad2, values_from = n, values_fill = 0)
+tabla_suplementaria
 
 ```
 
 
-
 ```{r}
-
+tabla_completa <- left_join(tabla_activa, tabla_suplementaria, by = "p17_b")
+tabla_completa
 ```
 
 
 ```{r}
+library(FactoMineR)
 
-```
+tabla_df <- as.data.frame(tabla_completa)                 # tibble -> data.frame
+tabla_df$p17_b[is.na(tabla_df$p17_b)] <- "sin_nombre"     # reemplazar NAs
+matriz <- tabla_df[, -1]                                   # quitar primera columna
+rownames(matriz) <- tabla_df$p17_b                         # asignar nombres de fila
+res <- CA(matriz, quali.sup = (ncol(tabla_activa):ncol(tabla_completa))) # CA()
 
-
-```{r}
 
 ```
 
