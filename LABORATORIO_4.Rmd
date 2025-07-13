@@ -27,19 +27,22 @@ View(ECC)
 ```{r}
 library(dplyr) # Para manejo de datos
 
-tabla_activa <- ECC %>% 
+ECC %>% 
   count(p17_b, p21) %>% 
   tidyr::pivot_wider(names_from = p21, values_from = n, values_fill = 0)
-tabla_activa
 ```
 
 ## Punto 2
 ```{r}
 library(dplyr) # Para manejo de datos
-
-tabla_suplementaria <- ECC %>% 
-  filter(!ciudad2 %in% c("Bogota", "Asuncion", "Montevideo")) %>% 
-  count(p17_b, ciudad2) %>% 
+tabla_activa <- ECC %>%
+  filter(!is.na(p17_b), !is.na(p21)) %>%
+  count(p17_b, p21) %>%
+  tidyr::pivot_wider(names_from = p21, values_from = n, values_fill = 0)
+tabla_suplementaria <- ECC %>%
+  filter(!is.na(p17_b), !is.na(ciudad2)) %>%
+  filter(!ciudad2 %in% c("Bogota", "Asuncion", "Montevideo")) %>%
+  count(p17_b, ciudad2) %>%
   tidyr::pivot_wider(names_from = ciudad2, values_from = n, values_fill = 0)
 tabla_suplementaria
 
@@ -48,22 +51,31 @@ tabla_suplementaria
 
 ```{r}
 tabla_completa <- left_join(tabla_activa, tabla_suplementaria, by = "p17_b")
+library(tibble)
+tabla_completa <- column_to_rownames(tabla_completa,var="p17_b")
 tabla_completa
 ```
 
 
 ```{r}
 library(FactoMineR)
+tabla_completa[] <- lapply(tabla_completa, as.integer)
+n_col_activas <- ncol(tabla_activa) - 1
+cols_suplementarias <- (n_col_activas + 1):ncol(tabla_completa)
 
-tabla_df <- as.data.frame(tabla_completa)                 # tibble -> data.frame
-tabla_df$p17_b[is.na(tabla_df$p17_b)] <- "sin_nombre"     # reemplazar NAs
-matriz <- tabla_df[, -1]                                   # quitar primera columna
-rownames(matriz) <- tabla_df$p17_b                         # asignar nombres de fila
-res <- CA(matriz, quali.sup = (ncol(tabla_activa):ncol(tabla_completa))) # CA()
-
+res <- CA(tabla_completa, col.sup = cols_suplementarias)
 
 ```
+p17_b:Le queda fácil actuar conforme a la ley
+p21:Las personas normalmente hacen acuerdos o tratos entre si. Muchas veces son acuerdos informales (Por ejemplo, los acuerdos basados en la
+ palabra, sin contrato firmado). Otras veces son acuerdos formales.¿Usted prefiere hacer acuerdos?
 
+El gráfico muestra que aunque parezcan semánticamente similares las respuestas "siempre" y "casi siempre", al encontrarse en lados opuestos las respuestas de ambas preguntas, nos hace ver que hay una clara diferencia entre estos dos grupos ("siempre" y "casi siempre"). Notamos consistencia entre estas dos preguntas ya que las respuestas de ambas coinciden en la ubicación del gráfico, por ejemplo para las personas que siempre les queda fácil actuar conforme la ley, pueden ser las mismas que siempre realizan acuerdos, o las personas que casi siempre les queda fácil actuar conformela ley pueden ser las mismas que casi siempre prefieren hacer acuerdos, ocurre lo mismo con las respuestas "casi nunca" y "nunca" respecto a la consistencia, ya que en este grupo de respuestas pareciera que no hay diferencia entre "casi nunca" y "nunca".
+La Paz, Quito, México DF y Medellín se proyectan cerca de las respuestas "nunca" o "casi nunca" en ambas preguntas.Esto sugiere que, en estas ciudades, las personas tienden a reportar mayor dificultad para actuar conforme a la ley y menor disposición a realizar acuerdos.
+
+Belo Horizonte está en el extremo derecho, cerca de las categorías "siempre". Indica un perfil asociado a personas que reportan cumplir siempre con la ley y prefieren siempre hacer acuerdos.
+
+Caracas se encuentra cerca de las respuestas de "siempre" y "nunca" simultáneamente.
 
 ```{r}
 
