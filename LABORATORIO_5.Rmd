@@ -14,13 +14,86 @@ editor_options:
     wrap: 72
 ---
 
-### **Laboratorio #4**
+### **Laboratorio #5**
 
-```{r}
+```{r librerias, message=FALSE, warning=FALSE}
+library(dplyr)       # manipulación de datos
+library(FactoMineR)  # MCA
+library(factoextra)  # visualización
+```
+
+# Preparación del dataframe
+
+```{r librerias, message=FALSE, warning=FALSE}
+datos <- read.csv("ECC_completa_19426.csv")
 
 ```
 
+# Filtrado de los datos por ciudad: Bogota
 
+```{r librerias, message=FALSE, warning=FALSE}
+datos_bogota <- datos %>%
+  filter(ciudad2 == "Bogota")
+```
+
+# Filtrado variables activas
+
+```{r librerias, message=FALSE, warning=FALSE}
+vars_act <- c(
+  "p20_a","p20_b","p20_c","p20_d","p20_e",
+  "p20_f","p20_g","p20_h","p20_i","p20_j",
+  "p20_k","p21","p27",
+  "p33_a","p33_b","p33_c","p33_d","p33_e",
+  "p33_f","p33_g","p33_h","p33_i","p33_j",
+  "p33_k","p33_l","p33_m","p33_n","p33_o","p33_p"
+)
+df_mca <- datos_bogota[, vars_act]
+
+```
+
+# Calculo de MCA
+
+```{r librerias, message=FALSE, warning=FALSE}
+mca <- MCA(df_mca, graph = FALSE)
+
+```
+
+# Gráfico individuos
+
+```{r librerias, message=FALSE, warning=FALSE}
+fviz_mca_ind(
+  mca,
+  col.ind = "cos2",
+  title   = "MCA: Individuos"
+)
+
+```
+
+# Gráfico variables
+
+```{r librerias, message=FALSE, warning=FALSE}
+fviz_mca_var(
+  mca,
+  repel   = TRUE,
+  axes    = c(1, 2),
+  title   = "MCA: Variables",
+  col.var = "cos2"
+)
+
+```
+
+# Gráfico Biplot
+
+```{r librerias, message=FALSE, warning=FALSE}
+fviz_mca_biplot(
+  mca,
+  select.var = list(contrib = 30),  # top 30 variables
+  alpha.ind  = 0.1,                  # baja opacidad en individuos
+  col.ind    = "gray",
+  col.var    = "cos2"
+)
+
+```
 
 ```{r}
 
