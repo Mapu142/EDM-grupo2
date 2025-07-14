@@ -17,6 +17,7 @@ editor_options:
 ### **Laboratorio #5**
 
 ```{r librerias, message=FALSE, warning=FALSE}
+library(readr)
 library(dplyr)       # manipulación de datos
 library(FactoMineR)  # MCA
 library(factoextra)  # visualización
@@ -25,7 +26,8 @@ library(factoextra)  # visualización
 # Preparación del dataframe
 
 ```{r librerias, message=FALSE, warning=FALSE}
-datos <- read.csv("ECC_completa_19426.csv")
+datos <- read_delim("ECC_completa_19426.csv", 
+    delim = ";", escape_double = FALSE, trim_ws = TRUE)
 
 ```
 

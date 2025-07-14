@@ -27,10 +27,34 @@ View(ECC)
 ```{r}
 library(dplyr) # Para manejo de datos
 
-ECC %>% 
-  count(p17_b, p21) %>% 
+tabla <- ECC %>%
+  filter(!is.na(p17_b), !is.na(p21)) %>%
+  count(p17_b, p21) %>%
   tidyr::pivot_wider(names_from = p21, values_from = n, values_fill = 0)
 ```
+
+
+
+```{r}
+library(tibble)
+tabla <- column_to_rownames(tabla,var = "p17_b")
+#Analisis de correspondencias simples 
+ACS<-CA(tabla,graph=T)
+
+#autovalores
+ACS$eig
+
+#coordenadas 
+ACS$col$coord
+
+#contribuciones 
+ACS$col$contrib
+
+#cosenos cuadrados
+ACS$col$cos2
+```
+
+
 
 ## Punto 2
 ```{r}
@@ -51,7 +75,7 @@ tabla_suplementaria
 
 ```{r}
 tabla_completa <- left_join(tabla_activa, tabla_suplementaria, by = "p17_b")
-library(tibble)
+
 tabla_completa <- column_to_rownames(tabla_completa,var="p17_b")
 tabla_completa
 ```
