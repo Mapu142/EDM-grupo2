@@ -40,10 +40,14 @@ library(tibble)
 tabla <- column_to_rownames(tabla,var = "p17_b")
 #Analisis de correspondencias simples 
 ACS<-CA(tabla,graph=T)
+```
 
+```{r}
 #autovalores
 ACS$eig
+```
 
+```{r}
 #coordenadas 
 ACS$col$coord
 
@@ -53,7 +57,21 @@ ACS$col$contrib
 #cosenos cuadrados
 ACS$col$cos2
 ```
-
+```{r}
+#grafico columnas 
+f_col<-fviz_ca_col(ACS)
+f_col
+```
+```{r}
+#grafico filas 
+f_row<-fviz_ca_row(ACS)
+f_row   
+```
+```{r}
+#grafico biplot 
+f_biplot<-fviz_ca_biplot(ACS)
+f_biplot
+```
 
 
 ## Punto 2
@@ -94,7 +112,7 @@ p17_b:Le queda fácil actuar conforme a la ley
 p21:Las personas normalmente hacen acuerdos o tratos entre si. Muchas veces son acuerdos informales (Por ejemplo, los acuerdos basados en la
  palabra, sin contrato firmado). Otras veces son acuerdos formales.¿Usted prefiere hacer acuerdos?
 
-El gráfico muestra que aunque parezcan semánticamente similares las respuestas "siempre" y "casi siempre", al encontrarse en lados opuestos las respuestas de ambas preguntas, nos hace ver que hay una clara diferencia entre estos dos grupos ("siempre" y "casi siempre"). Notamos consistencia entre estas dos preguntas ya que las respuestas de ambas coinciden en la ubicación del gráfico, por ejemplo para las personas que siempre les queda fácil actuar conforme la ley, pueden ser las mismas que siempre realizan acuerdos, o las personas que casi siempre les queda fácil actuar conformela ley pueden ser las mismas que casi siempre prefieren hacer acuerdos, ocurre lo mismo con las respuestas "casi nunca" y "nunca" respecto a la consistencia, ya que en este grupo de respuestas pareciera que no hay diferencia entre "casi nunca" y "nunca".
+El gráfico muestra que aunque parezcan semánticamente similares las respuestas "siempre" y "casi siempre", al encontrarse en lados opuestos las respuestas de ambas preguntas, nos hace ver que hay una clara diferencia entre estos dos grupos ("siempre" y "casi siempre"). Notamos consistencia entre estas dos preguntas ya que las respuestas de ambas coinciden en la ubicación del gráfico, por ejemplo para las personas que siempre les queda fácil actuar conforme la ley, pueden ser las mismas que siempre realizan acuerdos, o las personas que casi siempre les queda fácil actuar conformela ley pueden ser las mismas que casi siempre prefieren hacer acuerdos, ocurre lo mismo con las respuestas "casi nunca" y "nunca" respecto a la consistencia, ya que en este grupo de respuestas pareciera que no hay diferencia entre "casi nunca" y "nunca" en la dimensión 2.
 La Paz, Quito, México DF y Medellín se proyectan cerca de las respuestas "nunca" o "casi nunca" en ambas preguntas.Esto sugiere que, en estas ciudades, las personas tienden a reportar mayor dificultad para actuar conforme a la ley y menor disposición a realizar acuerdos.
 
 Belo Horizonte está en el extremo derecho, cerca de las categorías "siempre". Indica un perfil asociado a personas que reportan cumplir siempre con la ley y prefieren siempre hacer acuerdos.
