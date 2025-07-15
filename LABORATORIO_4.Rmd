@@ -17,6 +17,12 @@ editor_options:
 ### **Laboratorio #4**
 
 ```{r}
+library(haven)
+library(FactoMineR)
+library(factoextra)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
 library(readr)
 ECC <- read_delim("ECC_completa_19426.csv", 
     delim = ";", escape_double = FALSE, trim_ws = TRUE)
@@ -119,11 +125,138 @@ Belo Horizonte está en el extremo derecho, cerca de las categorías "siempre". 
 
 Caracas se encuentra cerca de las respuestas de "siempre" y "nunca" simultáneamente.
 
-```{r}
+## Preguntas 3 y 4
 
+### 🧽 Preparar datos
+
+```{r}
+# Seleccionar variables clave
+ECC_sub <- ECC %>% select(p17_b, p21, ciudad = ciudad2)
+
+# Eliminar casos con datos faltantes y asegurar factores
+ECC_sub <- ECC_sub %>%
+  filter(!is.na(p17_b), !is.na(p21), !is.na(ciudad)) %>%
+  mutate(
+    p17_b = as.factor(p17_b),
+    p21   = as.factor(p21),
+    ciudad = as.factor(ciudad)
+  )
+```
+
+## 🔍 Punto 3: Análisis de Correspondencias Simples (ACS) entre p17_b y p21
+
+```{r}
+# Tabla de contingencia
+tabla1 <- table(ECC_sub$p17_b, ECC_sub$p21)
+
+# Ejecutar el ACS
+res.acs <- CA(tabla1, graph = FALSE)
+
+# Mostrar resumen
+summary(res.acs)
+```
+
+### 📝 Interpretación del ACS
+
+El análisis de correspondencias simples entre la percepción de facilidad para cumplir la ley (p17_b) y la preferencia por hacer acuerdos (p21) revela una asociación significativa (χ² = 290.54, p < 0.001).
+
+La primera dimensión explica el 83.7% de la varianza, lo que indica que existe una fuerte estructura en los datos.
+
+- Las personas que consideran más fácil cumplir la ley (categorías 3 y 4 de p17_b) tienden a estar más de acuerdo con hacer acuerdos (categorías 3 y 4 de p21).
+
+- En contraste, quienes perciben que es difícil cumplir la ley (categorías 1 y 2 de p17_b) muestran menor acuerdo con hacer acuerdos.
+
+Esta asociación sugiere que las personas que consideran fácil cumplir la ley tienden a mostrar mayor preferencia por hacer acuerdos, mientras que aquellas que consideran difícil cumplir la ley manifiestan menor disposición hacia el consenso. Esta relación se observa claramente en el primer eje del plano factorial, que explica más del 80% de la varianza.
+
+### 📈 Visualización del ACS
+
+```{r}
+fviz_ca_biplot(res.acs, repel = TRUE) +
+  labs(title = "ACS: Facilidad para cumplir la ley (p17_b) vs Preferencia por acuerdos (p21)")
 ```
 
 
+
+
+
+### 🔍 Interpretación gráfico:
+
+Este gráfico representa un plano factorial del Análisis de Correspondencias Simples (ACS) entre:
+
+- p17_b: Facilidad para cumplir la ley
+
+- p21: Preferencia por hacer acuerdos
+
+Cada punto representa una categoría de respuesta de cada variable, y su posición indica relaciones de asociación:
+
+Los puntos más cercanos entre sí indican que esas categorías tienden a coaparecer en las respuestas.
+
+Los extremos del eje Dim.1 (que explica el 83.7% de la variabilidad) separan a los encuestados en función de sus respuestas.
+
+🧩 Hallazgos clave:
+En el cuadrante inferior derecho, se agrupan:
+
+- p17b_FACL=4_s (muy fácil cumplir la ley)
+
+- p21_HACACU=4_s (muy de acuerdo con hacer acuerdos)
+
+Esto indica que quienes consideran que es muy fácil cumplir la ley tienden a estar muy de acuerdo con hacer acuerdos.
+
+En el cuadrante superior izquierdo, aparecen:
+
+- p17b_FACL=1_n y 2_cn (nada o poco fácil cumplir la ley)
+
+- p21_HACACU=1_n y 2_cn (nada o poco de acuerdo con hacer acuerdos)
+
+Esto sugiere que quienes consideran que cumplir la ley es difícil también tienden a estar menos de acuerdo con hacer acuerdos.
+
+📌 Conclusión: Existe una clara asociación entre ambas variables. La percepción de legalidad parece estar positivamente relacionada con la disposición al consenso.
+
+## 🌍 Punto 4: Preferencia por acuerdos (p21) según ciudad
+
+```{r}
+# Tabla de frecuencias
+tabla2 <- table(ECC_sub$ciudad, ECC_sub$p21)
+
+# Proporciones por ciudad (filas)
+prop_ciudad <- prop.table(tabla2, margin = 1)
+
+# Convertir a formato largo
+df_plot <- as.data.frame(prop_ciudad) %>%
+  rename(ciudad = Var1, p21 = Var2, proporcion = Freq)
+```
+
+### 📊 Gráfico de barras apiladas por ciudad
+
+```{r}
+ggplot(df_plot, aes(x = ciudad, y = proporcion, fill = p21)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Preferencia por hacer acuerdos (p21) por ciudad",
+       x = "Ciudad", y = "Proporción") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+### 🔍 Interpretación gráfico:
+Este gráfico de barras apiladas muestra las proporciones de respuestas a la pregunta p21 por ciudad. Se analizan 4 niveles:
+
+- 1_n: Nada de acuerdo
+
+- 2_cn: Poco de acuerdo
+
+- 3_cs: De acuerdo
+
+- 4_s: Muy de acuerdo
+
+🧩 Hallazgos clave:
+
+- Bogotá destaca con una alta proporción en la categoría 4_s (muy de acuerdo), similar a Asunción y Medellín.
+
+- Caracas y Montevideo tienen una mayor proporción en 1_n y 2_cn, indicando menos disposición a hacer acuerdos.
+
+- México DF muestra una distribución más equilibrada, pero con una leve inclinación hacia el acuerdo (3_cs).
+
+📌 Conclusión: Existen diferencias claras entre ciudades. Algunas, como Bogotá, muestran un perfil más orientado al consenso, mientras que otras como Caracas presentan una mayor resistencia.
 
 ```{r}
 
