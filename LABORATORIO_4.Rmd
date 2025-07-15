@@ -133,3 +133,41 @@ Caracas se encuentra cerca de las respuestas de "siempre" y "nunca" simultáneam
 ```{r}
 
 ```
+### **Laboratorio 5**
+```{r librerias, message=FALSE, warning=FALSE}
+datos_bogota <- ECC %>%
+  filter(ciudad2 == "Bogota")
+```
+
+# Filtrado variables activas
+
+```{r librerias, message=FALSE, warning=FALSE}
+vars_act <- c(
+  "p20_a","p20_b","p20_c","p20_d","p20_e",
+  "p20_f","p20_g","p20_h","p20_i","p20_j",
+  "p20_k","p21","p27",
+  "p33_a","p33_b","p33_c","p33_d","p33_e",
+  "p33_f","p33_g","p33_h","p33_i","p33_j",
+  "p33_k","p33_l","p33_m","p33_n","p33_o","p33_p"
+)
+df_mca <- datos_bogota[, vars_act]
+
+```
+
+# Calculo de MCA
+
+```{r librerias, message=FALSE, warning=FALSE}
+mca <- MCA(df_mca, graph = FALSE)
+
+```
+
+# Gráfico individuos
+
+```{r librerias, message=FALSE, warning=FALSE}
+fviz_mca_ind(
+  mca,
+  col.ind = "cos2",
+  title   = "MCA: Individuos"
+)
+
+```
