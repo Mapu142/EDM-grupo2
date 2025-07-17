@@ -304,6 +304,28 @@ fviz_mca_ind(
 )
 
 ```
+
+```{r}
+# Gráfico variables
+fviz_mca_var(
+  mca,
+  repel   = TRUE,
+  axes    = c(1, 2),
+  title   = "MCA: Variables",
+  col.var = "cos2"
+)
+
+
+
+# Gráfico Biplot
+fviz_mca_biplot(
+  mca,
+  select.var = list(contrib = 30),  # top 30 variables
+  alpha.ind  = 0.1,                  # baja opacidad en individuos
+  col.ind    = "gray",
+  col.var    = "cos2"
+)
+```
 Gracias a este gráfico de individuos ubicamos fácilmente la ubicación de los mismos, como idea general vemos como una gran parte de los datos se concentran cerca a la zona izquierda del gráfico, sobre todo en cercanía al eje x pero teniendo (en general) un cos² no tan elevado. Al enfocarnos en los datos que vemos en la zona izquierda del gráfico podemos apreciar individuos mucho más distanciados del origen comparados con la posición de la mayoría de los datos, asimismo encontramos datos con un cos² mucho mayor.
 
 
@@ -415,7 +437,7 @@ plot.MCA(acm1, cex=0.7, invisible= "ind")
 --------------------------------------------------------------------------------
 #ACM usando como ilustrativa sexo(p5)
 ```{R}
-#Datos con las variables ilustrativa de sexo(p5), p20_a:p20_k, p21, p27 y p33_a:p33_p
+#Datos con las variables de sexo(p5), p20_a:p20_k, p21, p27 y p33_a:p33_p
 datos_acm2 <- datos_bogota[, c(8, 65:76, 102, 108:123)]
 
 #ACM
