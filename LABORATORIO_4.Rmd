@@ -304,3 +304,155 @@ fviz_mca_ind(
 )
 
 ```
+Gracias a este gráfico de individuos ubicamos fácilmente la ubicación de los mismos, como idea general vemos como una gran parte de los datos se concentran cerca a la zona izquierda del gráfico, sobre todo en cercanía al eje x pero teniendo (en general) un cos² no tan elevado. Al enfocarnos en los datos que vemos en la zona izquierda del gráfico podemos apreciar individuos mucho más distanciados del origen comparados con la posición de la mayoría de los datos, asimismo encontramos datos con un cos² mucho mayor.
+
+
+
+En el gráfico de variables apreciamos en primera medida la gran cantidad de variables y posibles respuestas a nuestras preguntas que fueron dadas, en particular nos encontramos con una gran cantidad de variables cercanas a nuestro origen y dos grupos destacables, uno ubicado en la zona positiva cercana al eje X y otro ubicado en la zona positiva cercana al  eje y. Liderados por las variables P20-h (SI desobedecería la ley si “alguien lo ha hecho y le ha ido bien”) y p33b (aceptaría drogadictos como vecinos) como respuestas más alejadas de nuestro origen.
+
+Gracias al Biplot vamos a poder encontrar relaciones entre la disposición de nuestros individuos y nuestras variables (limitadas a las 30 variables con mayor contribución para mejor legibilidad ), a simple vista encontramos que la zona con más individuos que se había mencionado se encuentra relacionada con las variables P20-NO B-C-F(no desobedecería la ley cuando “es la única manera de ayudar a su familia”, “cuando es la única manera de luchar contra un régimen injusto” y “cuando se hace para responder a una ofensa al honor”).
+
+Este grupo se extiende por todo el eje Y, variando entre las respuestas de la pregunta 33, en la parte superior encontramos a quienes respondieron SÍ a recibir como vecinos a guerrilleros paramilitares y drogadictos, mientras que en la parte baja de este grupo encontramos a quienes respondieron NO a tener como vecinos a pacientes de sida y  desplazados.
+
+Por parte de los datos extendiéndose hacia la parte derecha de nuestro gráfico encontramos individuos con mayor relación hacia las respuestas de SÍ cuando preguntados por si desobedecerían la ley “para pagar un favor”, “si es lo acostumbrado” o ”alguien lo ha hecho y le ha ido bien”.
+
+En general y con una vista mas clara de las variables podemos ver como al aumentar el valor de las coordenadas del individuo en el eje X el individuo encontrara una mayor relación con el desobedecer la ley mientras que al aumentar coordenadas sobre el eje Y los individuos estarán mas relacionados con SI aceptar a todo tipo de personas como vecinos.
+
+# Punto 2
+```{R}
+ECC$p20_a[ECC$p20_a == "p20a_RDL_AO=1_si"] ="p20_a: SI"
+ECC$p20_b[ECC$p20_b == "p20b_RDL_AF=1_si"] ="p20_b: SI"
+ECC$p20_c[ECC$p20_c == "p20c_RDL_RI=1_si"] ="p20_c: SI"
+ECC$p20_d[ECC$p20_d == "p20d_RDL_PE=1_si"] ="p20_d: SI"
+ECC$p20_e[ECC$p20_e == "p20e_RDL_CR=1_si"] ="p20_e: SI"
+ECC$p20_f[ECC$p20_f == "p20f_RDL_OH=1_si"] ="p20_f: SI"
+ECC$p20_g[ECC$p20_g == "p20g_RDL_NC=1_si"] ="p20_g: SI"
+ECC$p20_h[ECC$p20_h == "p20h_RDL_IB=1_si"] ="p20_h: SI"
+ECC$p20_i[ECC$p20_i == "p20i_RDL_LA=1_si"] ="p20_i: SI"
+ECC$p20_j[ECC$p20_j == "p20j_RDL_PF=1_si"] ="p20_j: SI"
+ECC$p20_k[ECC$p20_h == "p20k_RDL_DPB=1_si"] ="p20_k: SI"
+
+ECC$p20_a[ECC$p20_a == "p20a_RDL_AO=2_no"] ="p20_a: NO"
+ECC$p20_b[ECC$p20_b == "p20b_RDL_AF=2_no"] ="p20_b: NO"
+ECC$p20_c[ECC$p20_c == "p20c_RDL_RI=2_no"] ="p20_c: NO"
+ECC$p20_d[ECC$p20_d == "p20d_RDL_PE=2_no"] ="p20_d: NO"
+ECC$p20_e[ECC$p20_e == "p20e_RDL_CR=2_no"] ="p20_e: NO"
+ECC$p20_f[ECC$p20_f == "p20f_RDL_OH=2_no"] ="p20_f: NO"
+ECC$p20_g[ECC$p20_g == "p20g_RDL_NC=2_no"] ="p20_g: NO"
+ECC$p20_h[ECC$p20_h == "p20h_RDL_IB=2_no"] ="p20_h: NO"
+ECC$p20_i[ECC$p20_i == "p20i_RDL_LA=2_no"] ="p20_i: NO"
+ECC$p20_j[ECC$p20_j == "p20j_RDL_PF=2_no"] ="p20_j: NO"
+ECC$p20_k[ECC$p20_h == "p20k_RDL_DPB=2_no"] ="p20_k: NO"
+
+ECC$p21[ECC$p21 == "p21_HACACU=1_n"] ="p21: Nunca"
+ECC$p21[ECC$p21 == "p21_HACACU=2_cn"] ="p21: Casi nunca"
+ECC$p21[ECC$p21 == "p21_HACACU=3_cs"] ="p21: Casi simpre"
+ECC$p21[ECC$p21 == "p21_HACACU=4_s"] ="p21: Siempre"
+
+ECC$p27[ECC$p27 == "p27_CS=1_muyinseg"] ="Muy_inseg"
+ECC$p27[ECC$p27 == "p27_CS=2_inseg"] ="p21: Inseguro"
+ECC$p27[ECC$p27 == "p27_CS=3_nisegniinse"] ="Ninguna"
+ECC$p27[ECC$p27 == "p27_CS=4_inseg"] ="Seguro"
+ECC$p27[ECC$p27 == "p27_CS=5_muyinseg"] ="Muy_seguro"
+
+
+ECC$p33_a[ECC$p33_a == "p33a=2_aceptalcohol"] ="Si_alcohol"
+ECC$p33_b[ECC$p33_b == "p33b=2_aceptadrogad"] ="Si_drogad"
+ECC$p33_c[ECC$p33_c == "p33c=2_aceptahomos"] ="Si_homos"
+ECC$p33_d[ECC$p33_d == "p33d=2_aceptaprosti"] ="Si_prosti"
+ECC$p33_e[ECC$p33_e == "p33e=2_aceptasida"] ="Si_enf_sida"
+ECC$p33_f[ECC$p33_f == "p33f=2_aceptarelig"] ="Si_religion_dif."
+ECC$p33_g[ECC$p33_g == "p33g=2_aceptanacion"] ="Si_nac_dif."
+ECC$p33_h[ECC$p33_h == "p33h=2_aceptanartra"] ="Si_narcotra."
+ECC$p33_i[ECC$p33_i == "p33i=2_aceptapolic"] ="Si_policia"
+ECC$p33_j[ECC$p33_j == "p33j=2_aceptaregion"] ="Si_region dif."
+ECC$p33_k[ECC$p33_k == "p33k=2_aceptacorrupto"] ="Si_corrupto"
+ECC$p33_l[ECC$p33_l == "p33l=2_aceptacolor"] ="Si_gente_col."
+ECC$p33_m[ECC$p33_m == "p33m=2_aceptapoliti"] ="Si_politicos"
+ECC$p33_n[ECC$p33_n == "p33n=2_aceptaparas"] ="Si_paras"
+ECC$p33_o[ECC$p33_o == "p33o=2_aceptaguerri"] ="Si_guerri"
+ECC$p33_p[ECC$p33_p == "p33p=2_aceptadespla"] ="Si_despla"
+
+ECC$p33_a[ECC$p33_a == "p33a=1_noalcohol"] ="No_alcohol"
+ECC$p33_b[ECC$p33_b == "p33b=1_nodrogad"] ="No_drogad"
+ECC$p33_c[ECC$p33_c == "p33c=1_nohomos"] ="No_homos"
+ECC$p33_d[ECC$p33_d == "p33d=1_noprosti"] ="No_prosti"
+ECC$p33_e[ECC$p33_e == "p33e=1_nosida"] ="No_enf_sida"
+ECC$p33_f[ECC$p33_f == "p33f=1_norelig"] ="No_religion_dif."
+ECC$p33_g[ECC$p33_g == "p33g=1_nonacion"] ="No_nac_dif."
+ECC$p33_h[ECC$p33_h == "p33h=1_nonartra"] ="No_narcotra."
+ECC$p33_i[ECC$p33_i == "p33i=1_nopolic"] ="No_policia"
+ECC$p33_j[ECC$p33_j == "p33j=1_noregion"] ="No_region dif."
+ECC$p33_k[ECC$p33_k == "p33k=1_nocorrupto"] ="No_corrupto"
+ECC$p33_l[ECC$p33_l == "p33l=1_nocolor"] ="No_gente_col."
+ECC$p33_m[ECC$p33_m == "p33m=1_nopoliti"] ="No_politicos"
+ECC$p33_n[ECC$p33_n == "p33n=1_noparas"] ="No_paras"
+ECC$p33_o[ECC$p33_o == "p33o=1_noguerri"] ="No_guerri"
+ECC$p33_p[ECC$p33_p == "p33p=1_nodespla"] ="No_despla"
+
+datos_bogota <- ECC[ECC$ciudad2 == "Bogota", ]
+
+```
+#ACM usando como ilustrativa nivel socio económico (NSE)
+```{R}
+#Datos con las variables de NSE, p20_a:p20_k, p21, p27 y p33_a:p33_p
+datos_acm1 <- datos_bogota[, c(7, 65:76, 102, 108:123)]
+
+#ACM
+acm1 <- MCA(datos_acm1, quali.sup = 1)
+
+#Gráfico
+plot.MCA(acm1, cex=0.7, invisible= "ind")
+```
+##Podemos ver en el gráfico que las variables ilustrativas estan bastante 
+##cerca del origen de las dimensiones, lo que significa que estas modalidades
+##no contribuyen fuertemente a diferenciar los individuos en estas dimensiones,
+##pero siendo un poco mas detallados podemos ver que el estrato socio 
+##económico 1 se tiende a relacionar con las personas que justifican de algún
+##modo la desobediencia a la ley, mientras que los de estrato socio 
+##económico 3 tienden a estar mas relacionados con los que no justifican la
+##desobediencia a la ley.
+--------------------------------------------------------------------------------
+#ACM usando como ilustrativa sexo(p5)
+```{R}
+#Datos con las variables ilustrativa de sexo(p5), p20_a:p20_k, p21, p27 y p33_a:p33_p
+datos_acm2 <- datos_bogota[, c(8, 65:76, 102, 108:123)]
+
+#ACM
+acm2 <- MCA(datos_acm2, quali.sup = 1)
+
+#Gráfico
+plot.MCA(acm2, cex=0.7, invisible= "ind")
+```
+##En el gráfico se puede observar que el sexo femenino tiende a estar relacionado
+##con las personas que estan en desacuerdo con tener como vecinos a personas
+##consideradas como peligrosas o con malos hábitos y también con las que no 
+##justifican la desobediencia a la ley, por otro lado los hombres tienden a estar
+##relacionados con las personas que hacen contratos y con las que justifican la
+##desobediencia a la ley.
+--------------------------------------------------------------------------------
+#ACM con todas la ilustrativa nivel educativo(p7)
+```{R}
+#Datos con todas las variables ilustrativas nivel educativo(p7) y p20_a:p20_k, 
+#p21, p27 y p33_a:p33_p
+datos_acm3 <- datos_bogota[, c(9, 65:76, 102, 108:123)]
+
+#ACM
+acm3 <- MCA(datos_acm3, quali.sup = 1)
+
+#Gráfico
+plot.MCA(acm3, cex=0.7, invisible= "ind")
+```
+##Podemos observar que las personas que no tienen ningún nivel educativo,
+##tienden a estar relacionados con aquellos a quienes no les molesta tener
+##como vecinos a personas consideradas como peligrosas o con malos hábitos y 
+##también se asocian con aquellos que consideran que su barrio es inseguro.
+##Las personas con un nivel de educación de primaria también coinciden en que
+##no les molesta tener como vecinos a personas consideradas como peligrosas y
+##también estan asociadas a personas que no justifican la desobediencia a la ley.
+##Las personas con un nivel educativo de secundaria tienden a estar asociados
+##con los que justifician de algún modo la desobediencia a la ley, también con
+##aquellos que consideran que su barrio es seguro.
+##Las personas con un nivel de educación universitaria y técnico o tecnologo 
+##estan asociadas a personas que no justifican la desobediencia a la ley y que 
+##consideran que el barrio donde viven es seguro.
