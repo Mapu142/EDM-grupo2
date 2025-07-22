@@ -24,6 +24,11 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(readr)
+library(ggplot2)
+library(grid)
+library(RColorBrewer)
+library(tibble)
+library(knitr)
 ECC <- read_delim("ECC_completa_19426.csv", 
     delim = ";", escape_double = FALSE, trim_ws = TRUE)
 View(ECC)
@@ -31,19 +36,15 @@ View(ECC)
 
 ## Punto 1
 ```{r}
-library(dplyr) # Para manejo de datos
+#tabla de contingencia 
+tabla<-table(ECC$p17_b, ECC$p21)
+tabla
 
-tabla <- ECC %>%
-  filter(!is.na(p17_b), !is.na(p21)) %>%
-  count(p17_b, p21) %>%
-  tidyr::pivot_wider(names_from = p21, values_from = n, values_fill = 0)
 ```
 
-
+La tabla de contingencia muestra una relación entre la facilidad con la que las personas consideran que pueden actuar conforme a la ley y su preferencia por hacer acuerdos, ya sean formales o informales. Se observa una tendencia clara: a mayor percepción de facilidad para actuar conforme a la ley, mayor es también la preferencia por establecer acuerdos. Por ejemplo, entre quienes afirman que “siempre” les resulta fácil actuar conforme a la ley, una gran proporción indica que “casi siempre” o “siempre” prefieren hacer acuerdos (3262 y 3144 personas, respectivamente). En contraste, entre quienes “nunca” actúan conforme a la ley, las respuestas se concentran en niveles bajos de preferencia por los acuerdos. Esta relación sugiere que el respeto por la norma jurídica puede estar vinculado a una mayor disposición a cooperar y confiar en los demás a través de acuerdos, lo cual podría interpretarse como un indicador de capital social o de confianza interpersonal dentro de la comunidad.
 
 ```{r}
-library(tibble)
-tabla <- column_to_rownames(tabla,var = "p17_b")
 #Analisis de correspondencias simples 
 ACS<-CA(tabla,graph=T)
 ```
@@ -51,9 +52,7 @@ ACS<-CA(tabla,graph=T)
 ```{r}
 #autovalores
 ACS$eig
-```
 
-```{r}
 #coordenadas 
 ACS$col$coord
 
@@ -63,22 +62,52 @@ ACS$col$contrib
 #cosenos cuadrados
 ACS$col$cos2
 ```
+
+Con base en los resultados numéricos del Análisis de Correspondencias Simples (ACS), se confirma que la primera dimensión (Dim 1) explica la mayor parte de la variabilidad entre las categorías de la variable preferencia por hacer acuerdos (p21), con un 83.7% del total, mientras que la segunda dimensión (Dim 2) aporta un 15.5%, acumulando en conjunto un 99.17% de la varianza, lo cual valida la fidelidad del gráfico para representar la estructura de las relaciones. Las coordenadas muestran que las categorías “siempre” (p21_HACACU=4_s) y “casi siempre” (p21_HACACU=3_cs) están fuertemente diferenciadas en la Dim 1, en sentidos opuestos, siendo esta última la que más contribuye (42.66%) junto con la categoría “siempre” (52.40%), lo que indica que son las más influyentes en esa dimensión. Por su parte, las categorías “nunca” y “casi nunca” contribuyen más a la segunda dimensión (Dim 2), con contribuciones del 38.9% y 32.8%, respectivamente, lo que sugiere que esta dimensión capta la variación entre quienes tienen baja preferencia por los acuerdos. Finalmente, los cosenos cuadrados (cos²) muestran que las categorías “siempre” y “casi siempre” están muy bien representadas en la Dim 1 (valores cercanos a 1), mientras que “nunca” y “casi nunca” se explican mejor por la Dim 2. En conjunto, estos resultados refuerzan la idea de una relación estructurada entre el respeto por la ley y la disposición a establecer acuerdos, diferenciando claramente perfiles de comportamiento según la orientación normativa y social.
+
 ```{r}
 #grafico columnas 
 f_col<-fviz_ca_col(ACS)
 f_col
 ```
+
 ```{r}
 #grafico filas 
 f_row<-fviz_ca_row(ACS)
 f_row   
 ```
+
 ```{r}
-#grafico biplot 
-f_biplot<-fviz_ca_biplot(ACS)
-f_biplot
+# Perfiles fila
+perf_fila <- prop.table(tabla, margin = 1)
+
+barplot(perf_fila, beside = TRUE, 
+        col = colorRampPalette(c("purple", "magenta"))(nrow(perf_fila)),
+        legend.text = TRUE,
+        args.legend = list(x = "bottom", cex = 0.7, inset = 0.02),
+        main = "Perfiles por modalidad (p17 - Facilidad para actuar conforme a la ley)",
+        las = 2, cex.names = 0.7)
+        
 ```
 
+Los perfiles fila permiten observar cómo se distribuye la preferencia por hacer acuerdos (p21) dentro de cada nivel de facilidad para actuar conforme a la ley (p17). En este gráfico se evidencia que, a medida que aumenta la percepción de legalidad personal, también aumenta la proporción de personas que prefieren hacer acuerdos, ya sean formales o informales. Específicamente, en la categoría "siempre" de p17, la mayor parte de las respuestas se concentran en “casi siempre” y “siempre” para la variable p21. En contraste, quienes afirman que “nunca” o “casi nunca” les resulta fácil actuar conforme a la ley muestran una distribución más dispersa o centrada en niveles bajos de preferencia por acuerdos. Esto sugiere una relación positiva entre la legalidad autopercibida y la disposición a participar en formas de cooperación social como los acuerdos.
+
+```{r}
+# Perfiles columna
+perf_col <- prop.table(tabla, margin = 2)
+
+barplot(perf_col, beside = TRUE, 
+        col = colorRampPalette(c("purple", "magenta"))(nrow(perf_col)),
+        legend.text = TRUE,
+        args.legend = list(x = "bottom", cex = 0.7, inset = 0.02),
+        main = "Perfiles por modalidad (p21 - Preferencia por hacer acuerdos)",
+        las = 2, cex.names = 0.7)
+
+```
+
+Por otro lado, los perfiles columna permiten ver cómo se distribuye la percepción de legalidad (p17) dentro de cada nivel de preferencia por hacer acuerdos (p21). En este gráfico se observa que las personas que “siempre” prefieren hacer acuerdos tienden, en su mayoría, a ubicarse en los niveles más altos de legalidad (“casi siempre” y “siempre”). A medida que disminuye la preferencia por hacer acuerdos (por ejemplo, en las categorías “nunca” o “casi nunca”), también disminuye la presencia de respuestas altas en p17, y aumentan aquellas en los niveles bajos de legalidad. Este comportamiento sugiere que quienes muestran más confianza y disposición a interactuar con otros mediante acuerdos también suelen considerarse más respetuosos de las normas legales.
+
+En conjunto, ambos gráficos refuerzan la interpretación planteada a partir de la tabla de contingencia y el análisis de correspondencias: existe una asociación positiva entre la disposición a actuar conforme a la ley y la preferencia por hacer acuerdos. Esta relación podría interpretarse como un reflejo de capital social, en tanto que las personas que se perciben a sí mismas como legales también tienden a confiar más en los demás y a establecer mecanismos de cooperación basados en acuerdos. Se trata de una conexión entre la normatividad interna (cumplir la ley) y la normatividad social (establecer acuerdos), que puede ser relevante para comprender dinámicas de convivencia, confianza interpersonal y respeto por las reglas en una comunidad.
 
 ## Punto 2
 ```{r}
@@ -127,7 +156,7 @@ Caracas se encuentra cerca de las respuestas de "siempre" y "nunca" simultáneam
 
 ## Preguntas 3 y 4
 
-### 🧽 Preparar datos
+### Preparar datos
 
 ```{r}
 # Seleccionar variables clave
@@ -143,7 +172,7 @@ ECC_sub <- ECC_sub %>%
   )
 ```
 
-## 🔍 Punto 3: Análisis de Correspondencias Simples (ACS) entre p17_b y p21
+## Punto 3: Análisis de Correspondencias Simples (ACS) entre p17_b y p21
 
 ```{r}
 # Tabla de contingencia
@@ -156,9 +185,9 @@ res.acs <- CA(tabla1, graph = FALSE)
 summary(res.acs)
 ```
 
-### 📝 Interpretación del ACS
+### Interpretación del ACS
 
-El análisis de correspondencias simples entre la percepción de facilidad para cumplir la ley (p17_b) y la preferencia por hacer acuerdos (p21) revela una asociación significativa (χ² = 290.54, p < 0.001).
+El análisis de correspondencias simples entre la percepción de facilidad para cumplir la ley (p17_b) y la preferencia por hacer acuerdos (p21) revela una asociación significativa ($X^2$ = 290.54, p < 0.001).
 
 La primera dimensión explica el 83.7% de la varianza, lo que indica que existe una fuerte estructura en los datos.
 
@@ -168,7 +197,7 @@ La primera dimensión explica el 83.7% de la varianza, lo que indica que existe 
 
 Esta asociación sugiere que las personas que consideran fácil cumplir la ley tienden a mostrar mayor preferencia por hacer acuerdos, mientras que aquellas que consideran difícil cumplir la ley manifiestan menor disposición hacia el consenso. Esta relación se observa claramente en el primer eje del plano factorial, que explica más del 80% de la varianza.
 
-### 📈 Visualización del ACS
+### Visualización del ACS
 
 ```{r}
 fviz_ca_biplot(res.acs, repel = TRUE) +
@@ -179,7 +208,7 @@ fviz_ca_biplot(res.acs, repel = TRUE) +
 
 
 
-### 🔍 Interpretación gráfico:
+### Interpretación gráfico:
 
 Este gráfico representa un plano factorial del Análisis de Correspondencias Simples (ACS) entre:
 
@@ -193,7 +222,7 @@ Los puntos más cercanos entre sí indican que esas categorías tienden a coapar
 
 Los extremos del eje Dim.1 (que explica el 83.7% de la variabilidad) separan a los encuestados en función de sus respuestas.
 
-🧩 Hallazgos clave:
+ Hallazgos clave:
 En el cuadrante inferior derecho, se agrupan:
 
 - p17b_FACL=4_s (muy fácil cumplir la ley)
@@ -210,9 +239,9 @@ En el cuadrante superior izquierdo, aparecen:
 
 Esto sugiere que quienes consideran que cumplir la ley es difícil también tienden a estar menos de acuerdo con hacer acuerdos.
 
-📌 Conclusión: Existe una clara asociación entre ambas variables. La percepción de legalidad parece estar positivamente relacionada con la disposición al consenso.
+ Conclusión: Existe una clara asociación entre ambas variables. La percepción de legalidad parece estar positivamente relacionada con la disposición al consenso.
 
-## 🌍 Punto 4: Preferencia por acuerdos (p21) según ciudad
+##  Punto 4: Preferencia por acuerdos (p21) según ciudad
 
 ```{r}
 # Tabla de frecuencias
@@ -226,7 +255,7 @@ df_plot <- as.data.frame(prop_ciudad) %>%
   rename(ciudad = Var1, p21 = Var2, proporcion = Freq)
 ```
 
-### 📊 Gráfico de barras apiladas por ciudad
+### Gráfico de barras apiladas por ciudad
 
 ```{r}
 ggplot(df_plot, aes(x = ciudad, y = proporcion, fill = p21)) +
@@ -237,7 +266,7 @@ ggplot(df_plot, aes(x = ciudad, y = proporcion, fill = p21)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
-### 🔍 Interpretación gráfico:
+### Interpretación gráfico:
 Este gráfico de barras apiladas muestra las proporciones de respuestas a la pregunta p21 por ciudad. Se analizan 4 niveles:
 
 - 1_n: Nada de acuerdo
@@ -248,7 +277,7 @@ Este gráfico de barras apiladas muestra las proporciones de respuestas a la pre
 
 - 4_s: Muy de acuerdo
 
-🧩 Hallazgos clave:
+ Hallazgos clave:
 
 - Bogotá destaca con una alta proporción en la categoría 4_s (muy de acuerdo), similar a Asunción y Medellín.
 
@@ -256,25 +285,204 @@ Este gráfico de barras apiladas muestra las proporciones de respuestas a la pre
 
 - México DF muestra una distribución más equilibrada, pero con una leve inclinación hacia el acuerdo (3_cs).
 
-📌 Conclusión: Existen diferencias claras entre ciudades. Algunas, como Bogotá, muestran un perfil más orientado al consenso, mientras que otras como Caracas presentan una mayor resistencia.
+ Conclusión: Existen diferencias claras entre ciudades. Algunas, como Bogotá, muestran un perfil más orientado al consenso, mientras que otras como Caracas presentan una mayor resistencia.
+
+
+##Pregunta 5
+
+
+## 1. Introducción y Preparación de Datos
+
+Aqui presentamos un Análisis de Correspondencias Simples (ACS) para explorar la relación entre diez ciudades latinoamericanas y la percepción de seguridad de sus ciudadanos. El análisis se basa en la pregunta 30 de la Encuesta de Cultura Ciudadana, que indaga si los ciudadanos sienten que su ciudad es más segura, menos segura o permanece igual en comparación con el año anterior.
+
+El objetivo es identificar patrones y perfiles de percepción que caractericen y diferencien a estas ciudades.
+
 
 ```{r}
+# Carga de datos usando read.csv2 para archivos separados por punto y coma
+datos_completos <-  read_delim("ECC_completa_19426.csv", 
+    delim = ";", escape_double = FALSE, trim_ws = TRUE)
+
+# Preparación de los datos
+# Seleccionamos las columnas de interés y las renombramos
+datos_analisis <- datos_completos %>%
+  select(ciudad = ciudad2, percepcion = p30)
+
+# Recodificamos las respuestas para mayor claridad y eliminamos valores perdidos
+datos_limpios <- datos_analisis %>%
+  mutate(percepcion_seguridad = case_when(
+    percepcion == "p30_AP=1_menosseg" ~ "Menos Segura",
+    percepcion == "p30_AP=2_igual"     ~ "Permanece Igual",
+    percepcion == "p30_AP=3_masseg"     ~ "Más Segura",
+    TRUE                               ~ NA_character_
+  )) %>%
+  filter(!is.na(percepcion_seguridad)) %>%
+  mutate(percepcion_seguridad = factor(percepcion_seguridad,
+                                       levels = c("Menos Segura", "Permanece Igual", "Más Segura")))
+```
+
+## 2. Análisis Descriptivo: Tabla de Contingencia
+
+Para comenzar, generamos una tabla de contingencia que cruza las ciudades (filas) con las categorías de percepción de seguridad (columnas). Esta tabla muestra las frecuencias absolutas de las respuestas.
+
+```{r Tabla_Contingencia, echo=FALSE}
+# Creación de la tabla de contingencia
+tabla_contingencia <- table(datos_limpios$ciudad, datos_limpios$percepcion_seguridad)
+
+# Mostramos la tabla usando kable() para un formato limpio
+kable(tabla_contingencia, caption = "Frecuencias de Percepción de Seguridad por Ciudad")
+```
+La tabla revela tendencias iniciales, como la alta frecuencia de la respuesta "Menos Segura" en ciudades como Bogotá y Caracas. Sin embargo, para entender las asociaciones significativas, procedemos con el ACS.
+
+## 3. Análisis de Correspondencias Simples (ACS)
+
+Realizamos el ACS sobre la tabla de contingencia. La prueba de Chi-cuadrado asociada al análisis nos permitirá validar si la relación entre las variables es estadísticamente significativa.
+
+```{r ACS_Calculo, collapse=TRUE}
+# Realizamos el ACS
+resultado_acs <- CA(tabla_contingencia, graph = FALSE)
+
+# Mostramos el resumen del análisis, que incluye la prueba de Chi-cuadrado y los eigenvalues
+summary(resultado_acs)
+```
+
+El resultado de la prueba de Chi-cuadrado muestra un **p-valor extremadamente bajo** (p < 0.001), lo que nos permite rechazar la hipótesis de independencia. Concluimos que **existe una asociación estadísticamente significativa** entre la ciudad y la percepción de seguridad.
+
+### Importancia de las Dimensiones
+
+El ACS extrae dos dimensiones principales para representar los datos. El siguiente gráfico de sedimentación (scree plot) muestra la importancia de cada una.
+
+```{r Scree_Plot, echo=FALSE, fig.align='center'}
+# Gráfico de sedimentación
+fviz_eig(resultado_acs, addlabels = TRUE,
+         main = "Gráfico de Sedimentación - Importancia de las Dimensiones") +
+         theme_minimal()
+```
+
+Como se observa, las dos dimensiones explican el **100% de la varianza total** (Dimensión 1: 79.6%, Dimensión 2: 20.4%). Esto significa que el mapa de correspondencias 2D es una representación perfecta y sin pérdida de información de las relaciones presentes en la tabla original.
+
+## 4. Interpretación del Mapa de Correspondencias
+
+El siguiente biplot es la visualización principal del análisis. Muestra la posición relativa de las ciudades (puntos azules) y las categorías de percepción (triángulos rojos). La proximidad entre puntos de diferentes colores indica una fuerte asociación.
+
+```{r Biplot, echo=FALSE, fig.align='center', fig.width=10, fig.height=7}
+# Gráfico de correspondencias (Biplot)
+fviz_ca_biplot(resultado_acs,
+               repel = TRUE, # Evita que las etiquetas se solapen
+               ggtheme = theme_minimal(),
+               title = "Análisis de Correspondencias: Ciudades y Percepción de Seguridad (P30)")
+```
+
+### Interpretación de los Ejes
+
+*   **Eje Horizontal (Dimensión 1, 79.6%):** Este eje representa el principal factor de diferenciación. Separa claramente la percepción de **inseguridad** (a la izquierda, con "Menos Segura") de las percepciones de **estabilidad y mejora** (a la derecha, con "Permanece Igual" y "Más Segura").
+*   **Eje Vertical (Dimensión 2, 20.4%):** Este eje discrimina entre la percepción de **mejora activa** (en la parte superior, con "Más Segura") y la de **estancamiento o estabilidad** (en la parte inferior, con "Permanece Igual").
+
+### Identificación de Patrones y Perfiles de Ciudad
+
+El mapa revela tres perfiles de percepción claramente diferenciados:
+
+1.  **Perfil de Inseguridad Pronunciada:** **Caracas** se ubica en el extremo izquierdo, mostrando una asociación excepcionalmente fuerte con la categoría "Menos Segura". Esto la define como la ciudad donde la percepción de deterioro de la seguridad es más característica y distintiva. **Asunción** y **Monterrey** también se inclinan hacia este perfil, aunque de manera menos extrema.
+
+2.  **Perfil de Estabilidad Percibida:** Un clúster muy definido, compuesto por **México DF, Montevideo y La Paz**, se agrupa en el cuadrante inferior derecho. Su proximidad a la categoría "Permanece Igual" indica que en estas ciudades la sensación predominante es que la situación de seguridad no ha cambiado significativamente.
+
+3.  **Perfil de Mejora Relativa:** **Medellín** y **Belo Horizonte** se posicionan en el cuadrante superior derecho, en dirección a "Más Segura". Esto sugiere que, en comparación con el resto, sus ciudadanos tienen una percepción significativamente más positiva sobre la evolución de la seguridad.
+
+Finalmente, **Bogotá** y **Quito** se encuentran más cerca del centro del mapa. Esto indica que sus perfiles de respuesta son más similares al promedio general y no presentan una tendencia tan marcada o polarizada como los grupos descritos anteriormente.
+
+## 5. Conclusión General
+
+Los resultados muestran que no hay una percepción homogénea, sino perfiles de ciudad bien definidos que van desde una fuerte sensación de deterioro (liderada por Caracas) hasta una notable percepción de mejora (destacando Medellín y Belo Horizonte), pasando por un sentimiento de estancamiento en otras capitales como México DF y Montevideo.
+
+
+## Pregunta 6
+
+## 2.1. Introducción al Análisis Suplementario
+
+Aqui exploramos si los patrones de percepción de seguridad identificados previamente se relacionan con la facilidad que tienen los ciudadanos para cumplir la ley (pregunta `p17_b`). Para ello, se realiza un nuevo ACS utilizando la pregunta `p17_b` como **variable suplementaria o ilustrativa**. Esto nos permite proyectar los perfiles de "facilidad para cumplir la ley" sobre el mapa de seguridad, sin alterar la estructura original del análisis.
+
+## 2.2. Preparación de los Datos para el Análisis Suplementario
+
+Se prepara una tabla de contingencia principal (idéntica a la del punto 5) y una tabla suplementaria que cruza las categorías de "facilidad para cumplir la ley" con las de percepción de seguridad.
+
+```{r Carga_Datos_P6, collapse=TRUE}
+# Tabla de análisis principal (la misma que en el punto 5)
+tabla_analisis_p6 <- tabla_contingencia
+
+# Preparación de los datos cruzados para la tabla suplementaria
+datos_cruzados_p6 <- datos_completos %>%
+  mutate(
+    percepcion_seguridad = factor(case_when(
+      p30 == "p30_AP=1_menosseg" ~ "Menos Segura",
+      p30 == "p30_AP=2_igual"     ~ "Permanece Igual",
+      p30 == "p30_AP=3_masseg"     ~ "Más Segura",
+      TRUE                        ~ NA_character_
+    ), levels = c("Menos Segura", "Permanece Igual", "Más Segura")),
+   
+    facilidad_ley = factor(case_when(
+      p17_b %in% c("p17b_FACL=1_n", "p17b_FACL=2_cn") ~ "Difícil cumplir la ley",
+      p17_b %in% c("p17b_FACL=3_cs", "p17b_FACL=4_s")  ~ "Fácil cumplir la ley",
+      TRUE                                            ~ NA_character_
+    ))
+  ) %>%
+  filter(!is.na(percepcion_seguridad), !is.na(facilidad_ley))
+
+# Crear la tabla suplementaria
+tabla_suplementaria_p6 <- table(datos_cruzados_p6$facilidad_ley, datos_cruzados_p6$percepcion_seguridad)
+
+kable(tabla_suplementaria_p6, caption = "Tabla Suplementaria: Facilidad Ley vs. Percepción Seguridad")
+```
+
+## 2.3. ACS con Variable Suplementaria
+
+Se combinan ambas tablas y se realiza el ACS, especificando qué filas son ilustrativas para que no influyan en la construcción de los ejes.
+
+```{r ACS_Calculo_P6, collapse=TRUE}
+# Combinar las tablas
+tabla_completa_p6 <- rbind(tabla_analisis_p6, tabla_suplementaria_p6)
+
+# Definir las filas suplementarias
+num_ciudades_p6 <- nrow(tabla_analisis_p6)
+filas_suplementarias_p6 <- c((num_ciudades_p6 + 1) : nrow(tabla_completa_p6))
+
+# Ejecutar el ACS con la variable suplementaria
+resultado_acs_p6 <- CA(tabla_completa_p6,
+                        row.sup = filas_suplementarias_p6,
+                        graph = FALSE)
 
 ```
 
+## 2.4. Mapa con Variables Suplementarias
 
-```{r}
+El siguiente biplot muestra el mapa original con los dos nuevos perfiles ("Fácil" y "Difícil" cumplir la ley) proyectados sobre él.
 
+```{r Biplot_P6, echo=FALSE, fig.align='center', fig.width=10, fig.height=7}
+# Visualizamos el biplot con las variables suplementarias
+fviz_ca_biplot(resultado_acs_p6,
+               repel = TRUE,
+               ggtheme = theme_minimal(),
+               title = "ACS con Variable Suplementaria: Facilidad para cumplir la Ley")
 ```
+
+## 2.5. Conclusión del Análisis
+
+La proyección de la variable "facilidad para cumplir la ley" como elemento ilustrativo aporta una nueva capa de entendimiento al análisis:
+
+*   El perfil de los ciudadanos que consideran **"Fácil cumplir la ley"** se sitúa **muy cerca del origen (0,0)** del mapa. Esto indica que esta percepción no está asociada de manera distintiva con ningún perfil de seguridad en particular. Representa el comportamiento "promedio" o normativo dentro de la población encuestada.
+
+*   En contraste, el perfil de quienes encuentran **"Difícil cumplir la ley"** muestra una asociación clara. Se posiciona en el **cuadrante inferior derecho**, alineándose con el clúster de ciudades donde predomina la percepción de que la seguridad **"Permanece Igual"** (como México DF, Montevideo y La Paz).
+
+Esta asociación sugiere que la dificultad para seguir las normas no está necesariamente ligada a entornos de caos o alta inseguridad, sino más bien a contextos de **estancamiento percibido**. Es posible que en ciudades donde los ciudadanos sienten que las cosas no mejoran, también perciban una mayor dificultad, arbitrariedad o falta de confianza en el sistema normativo, lo que dificulta su cumplimiento. La dificultad para cumplir la ley, por tanto, parece ser un síntoma de falta de progreso y confianza, más que de desorden absoluto.
+
 ### **Laboratorio 5**
-```{r librerias, message=FALSE, warning=FALSE}
+```{r}
 datos_bogota <- ECC %>%
   filter(ciudad2 == "Bogota")
 ```
 
 # Filtrado variables activas
 
-```{r librerias, message=FALSE, warning=FALSE}
+```{r}
 vars_act <- c(
   "p20_a","p20_b","p20_c","p20_d","p20_e",
   "p20_f","p20_g","p20_h","p20_i","p20_j",
@@ -289,14 +497,14 @@ df_mca <- datos_bogota[, vars_act]
 
 # Calculo de MCA
 
-```{r librerias, message=FALSE, warning=FALSE}
+```{r}
 mca <- MCA(df_mca, graph = FALSE)
 
 ```
 
 # Gráfico individuos
 
-```{r librerias, message=FALSE, warning=FALSE}
+```{r}
 fviz_mca_ind(
   mca,
   col.ind = "cos2",
