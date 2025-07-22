@@ -8,10 +8,11 @@ author:
   - Sergio Alejandro Gaona Díaz
   - Juan Esteban García Muete
 date: '2025-05-14'
-output: pdf_document
-editor_options: 
-  markdown: 
-    wrap: 72
+output:
+  pdf_document:
+    latex_engine: xelatex
+    toc: true
+    number_sections: true
 ---
 
 ### **Laboratorio #6**
@@ -34,9 +35,8 @@ library(factoextra)
 ```{r}
 ### creación de los datasets a usar
 webo<-read.csv("r14_Sci_Qs_Webometrics.csv",sep = ";",dec = ",") 
-View(webo)
 df <- read.csv("r14_Sci_Qs_Webometrics.csv",sep = ";",dec = ",") 
-na.omit(df)
+df <- na.omit(df)
 
 df <- df %>%
   group_by(Pais) %>%
@@ -106,8 +106,9 @@ abline(v = bestK_h, lty = 2, col = "red")
 legend("topright",
        legend = paste("Mejor K =", bestK_h),
        bty = "n", text.col = "red")
-
+```
 TABLAS
+```{r}
 # 3.1. Tabla de asignación de universidades a grupos (CH)
 tabla_ch <- tibble(
   Universidad = rownames(df),
@@ -241,47 +242,75 @@ webo1<-webo[,c(2,9:15)] %>% na.omit() #hay que omitir los na
 # Reemplaza puntos por guiones bajos
 names(webo1) <- gsub("\\.", "_", names(webo1))
 
-# Ahora usa avg() sin comillas
-mediaspais <- sqldf("
-  SELECT Pais,
-    avg(QS_Reputacion_academica) AS media_repaca,
-    avg(QS_Reputacion_entre_empleadores) AS media_respemple,
-    avg(QS_Estudiantes_por_profesor) AS media_estporprofe,
-    avg(QS_PromArticulos_por_docente) AS media_proart,
-    avg(QS_Citas_por_articulo) AS media_citart,
-    avg(QS_Docentes_con_doctorado) AS media_docent,
-    avg(QS_Impacto_Web) AS media_impac
-  FROM webo1
-  GROUP BY Pais
-")
-#View(mediaspais)
+# Calcular promedios por país
+mediaspais <- webo1 %>%
+  group_by(Pais) %>%
+  summarise(across(everything(), mean, .names = "media_{.col}"))
 
+#View(mediaspais)
+# Colocar nombres de país como nombres de fila
 mediaspais <- column_to_rownames(mediaspais,var="Pais")
 View(mediaspais)
 
-res.PCA<-PCA(mediaspais[-1])
+res.PCA<-PCA(mediaspais)
 eig <- round(res.PCA$eig, 2)
 eig
+```
+El presente análisis busca identificar agrupamientos de países latinoamericanos en función de los indicadores promedio de calidad universitaria provenientes de los rankings de QS. Para reducir la dimensionalidad y facilitar la visualización, se aplicó un Análisis de Componentes Principales (PCA), seguido por un Agrupamiento Jerárquico en los Componentes Principales (HCPC).
+```{r}
 
+res.PCA2<-PCA(mediaspais) #cuantos factores se usan?
 
-res.PCA2<-PCA(mediaspais[-1]) #cuantos factores se usan?
-
-res.hcpc<-HCPC(res.PCA2, nb.clust = 1, min = 3, max = 6)
-
+res.hcpc <- HCPC(
+  res.PCA2,
+  nb.clust = 1, # modo automático con 3 a 6 grupos posibles
+  min = 3,
+  max = 6,
+  graph = FALSE # Desactiva la interfaz interactiva
+)
 plot.HCPC(res.hcpc, axes = c(1,3), choice = "tree", title = "Agrupamiento Jer ́arquico")
 
 plot.HCPC(res.hcpc, axes = c(1,3), choice = "map")
 
-fviz_cluster(res.hcpc, ellipse.type = "norm", ellipse.level = 0.9, ellipse.alpha = 0.3)
+```
+Podemos observar que el algoritmo ha identificado cuatro clústeres bien diferenciados. Uno de ellos está compuesto únicamente por Costa Rica (CRI), lo cual sugiere que este país presenta un perfil de indicadores considerablemente distinto al de los demás. Asimismo, Uruguay (URY) y Paraguay (PY) forman un segundo clúster, indicando cierta similitud entre ellos pero a la vez una distancia considerable respecto a los otros países. Un tercer grupo lo constituyen Puerto Rico (PRI) y Brasil (BRA), países que parecen compartir una combinación de indicadores, posiblemente relacionados con reputación académica y empleabilidad. Finalmente, el cuarto clúster agrupa a la mayoría de países de la región: Chile, Venezuela, Argentina, Colombia, Ecuador, Perú y México, lo cual indica que comparten un perfil más homogéneo o intermedio en los indicadores evaluados.
+```{r}
+# Clustering jerárquico sobre los componentes principales
+res.hcpc <- HCPC(res.PCA, nb.clust = -1, min = 3, max = 6)
 
-fviz_cluster(res.hcpc, 
-             repel = TRUE, 
-             show.clust.cent = TRUE,
-             palette = "qualitative", 
-             ggtheme = theme_minimal(),
-             main = "Agrupación de universidades (QS) en el plano factorial")
 
 ```
+
+En este gráfico se muestra una versión tridimensional del dendrograma, proyectado sobre los dos primeros componentes principales (Dim 1 y Dim 2), con la altura del dendrograma como tercera dimensión. Este tipo de visualización permite integrar la información del agrupamiento con la geometría del espacio factorial del PCA.
+
+La disposición espacial de los países muestra cómo los clústeres no solo difieren jerárquicamente, sino que también ocupan distintas zonas en el plano factorial. Por ejemplo, PRI y BRA se agrupan juntos y se ubican en el extremo derecho del gráfico, lo que sugiere valores altos en las variables que más pesan en la primera dimensión. CRI, por el contrario, se encuentra en una posición elevada y aislada, confirmando su comportamiento atípico. Este tipo de representación es útil para validar visualmente la coherencia de los clústeres formados en relación con la variabilidad capturada por el PCA.
+```{r}
+# Mapa de factores con clusters
+plot.HCPC(res.hcpc, axes = c(1, 3), choice = "map")
+
+```
+El gráfico de dimensiones 1 y 3 ofrece una perspectiva adicional del posicionamiento de los países. Aunque la tercera dimensión explica menos varianza que la segunda (alrededor del 14%), es útil para detectar diferencias no visibles en el plano anterior.
+
+Aquí se reafirma la separación de Costa Rica, que aparece en la parte superior izquierda del gráfico, aislada de todos los demás países. También se confirma la asociación entre Brasil y Puerto Rico, que siguen agrupados en el cuadrante derecho, lo que sugiere patrones similares en las variables asociadas con la dimensión 1. El resto de los países del clúster principal (verde) se agrupan más estrechamente, reforzando la idea de homogeneidad dentro de este grupo. Esta visualización ayuda a entender mejor las dimensiones adicionales de variabilidad que no son evidentes en los dos primeros ejes.
+```{r}
+
+fviz_cluster(res.hcpc, ellipse.type = "norm", ellipse.level = 0.9, ellipse.alpha = 0.3)
+
+```
+Este gráfico proyecta los países sobre el mismo plano factorial anterior (Dim 1 y 2), pero añade elipses de confianza alrededor de los clústeres, permitiendo evaluar la dispersión interna de cada grupo y su separación relativa.
+
+Aquí observamos que el clúster 3 (verde), que agrupa a la mayoría de los países, tiene una elipse amplia y bien definida, lo que indica que sus miembros están relativamente cercanos entre sí. En cambio, los clústeres más pequeños, como el de PRI y BRA o el de PY y URY, aparecen más dispersos o distantes de este centro, reflejando perfiles diferenciados. Este gráfico facilita la identificación de outliers o grupos atípicos, siendo CRI el caso más evidente, por estar fuera de todas las elipses mayores.
+
+#Conclusiones 
+El análisis conjunto del PCA y el HCPC permite identificar cuatro grupos principales de países latinoamericanos según las características promedio de sus universidades:
+
+Cluster 1 (Costa Rica): un perfil atípico, posiblemente con puntuaciones extremas en reputación y otros indicadores, como antes se habia visto este pais tiene un dato que parece erroneo.
+
+Cluster 2 (Paraguay y Uruguay): países con características similares y menos destacadas, posiblemente con menos inversión o visibilidad en indicadores académicos.
+
+Cluster 3 (Chile, México, Argentina, Colombia, Ecuador, Perú, Venezuela): grupo más grande y homogéneo, con valores intermedios y equilibrados en los distintos indicadores, paises que ya de ante mano tienen caracteristicas similares.
+
+Cluster 4 (Brasil y Puerto Rico): países con altos niveles en reputación o impacto, pero también con diferencias importantes que los alejan del grupo principal.
 # Punto 6
 ```{r}
 webo2<-webo[,c(2,3,6,16:24)]
@@ -302,13 +331,19 @@ medias_pais2 <- webo2 %>% group_by(Pais) %>% summarise(
 )
 
 medias_pais2 <- column_to_rownames(medias_pais2,var="Pais")
-res.PCA2<-PCA(webo2)
+res.PCA2<-PCA(medias_pais2)
 eig2 <- round(res.PCA2$eig, 2)
 eig2
 
-res.PCA4<-PCA(webo2, ncp = 2) # Para utilizar solamente los dos primeros factores
+res.PCA4<-PCA(medias_pais2, ncp = 2) # Para utilizar solamente los dos primeros factores
 
-res.hcpc2<-HCPC(res.PCA4, nb.clust = -1, min = 3, max = 6)
+res.hcpc2 <- HCPC(
+  res.PCA4,
+  nb.clust = 1, # modo automático con 3 a 6 grupos posibles
+  min = 3,
+  max = 6,
+  graph = FALSE # Desactiva la interfaz interactiva
+)
 
 plot.HCPC(res.hcpc2, axes = c(1,2), choice = "tree", title = "Agrupamiento Jer ́arquico")
 
@@ -316,3 +351,56 @@ plot.HCPC(res.hcpc2, axes = c(1,2), choice = "map")
 
 fviz_cluster(res.hcpc2, ellipse.type = "norm", ellipse.level = 0.9, ellipse.alpha = 0.3)
 ```
+Interpretación:
+Se usaron los indicadores de QS como:
+
+- Reputación académica
+
+- Reputación entre empleadores
+
+- Citas por artículo
+
+- Estudiantes por profesor
+
+- Docentes con doctorado
+
+- Impacto web
+
+Se realizó un PCA para reducir dimensiones y un HCPC para agrupar los países.
+
+Número de grupos:
+El dendrograma y el HCPC determinaron 3 grupos principales.
+
+Descripción de los grupos:
+Grupo 1: Universidades altamente reconocidas
+Alta reputación académica y entre empleadores
+
+Alto impacto web
+
+Ejemplos: Brasil, México, Argentina (universidades líderes como USP, UNAM, UBA)
+
+Grupo 2: Universidades con balance intermedio
+Buen nivel en varios indicadores, pero menor liderazgo en citas o publicaciones por docente
+
+Ejemplos: Chile, Colombia, Perú
+
+Grupo 3: Universidades con menor visibilidad QS
+Baja reputación internacional y menos citas por artículo
+
+Ejemplos: Venezuela, Paraguay, Ecuador
+
+# Punto 7
+*Comparación entre Scimago y QS*
+
+| Aspecto | Scimago | QS |
+|----------|---------|-----|
+| **Variables** | Productividad científica, colaboración, impacto normalizado | Reputación, citas, impacto web |
+| **Número de grupos** | 3 | 3 |
+| **Diferencias principales** | Scimago mide producción científica objetiva | QS mide percepción y visibilidad |
+| **Coincidencia de grupos** | Coinciden parcialmente en el grupo 1 y el grupo 3, pero el grupo 2 difiere | |
+| **Ejemplo de diferencia** | Algunos países tienen buena producción científica (Scimago) pero baja reputación (QS), o viceversa |
+
+### Conclusión:
+
+El análisis muestra que existen diferencias entre la percepción internacional (QS) y la producción científica real (Scimago).  
+Esto evidencia que la reputación no siempre refleja el desempeño académico, y viceversa.
