@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.7.22)  22 JUL 2025 17:01
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.7.22)  23 JUL 2025 21:23
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -950,22 +950,38 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 LaTeX Font Info:    Trying to load font information for U+msb on input line 140.
 (c:/Users/DELL/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) (./LABORATORIO_5.toc)
+) (./LABORATORIO_5.toc
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
+(Font)              scaled to size 7.0pt on input line 6.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
+(Font)              scaled to size 5.0pt on input line 6.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
+(Font)              scaled to size 10.00092pt on input line 6.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
+(Font)              scaled to size 7.00064pt on input line 6.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
+(Font)              scaled to size 5.00046pt on input line 6.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
+(Font)              scaled to size 9.99893pt on input line 6.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
+(Font)              scaled to size 6.99925pt on input line 6.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
+(Font)              scaled to size 4.99947pt on input line 6.
+)
 \tf@toc=\write4
 \openout4 = `LABORATORIO_5.toc'.
 
 LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <10> not available
 (Font)              Font shape `TU/lmtt/b/n' tried instead on input line 150.
 
-Overfull \hbox (76.24498pt too wide) in paragraph at lines 165--165
-[]\TU/lmtt/m/n/10 ## i Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors[] 
- []
-
-
 
 [1
 
 ]
+Overfull \hbox (76.24498pt too wide) in paragraph at lines 165--165
+[]\TU/lmtt/m/n/10 ## i Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors[] 
+ []
+
 
 LaTeX Font Warning: Font shape `TU/lmtt/bx/it' in size <10> not available
 (Font)              Font shape `TU/lmtt/b/sl' tried instead on input line 227.
@@ -978,6 +994,8 @@ File: LABORATORIO_5_files/figure-latex/unnamed-chunk-3-1.pdf Graphic file (type 
 
 
 [3]
+
+[4]
 File: LABORATORIO_5_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file (type pdf)
 <use LABORATORIO_5_files/figure-latex/unnamed-chunk-4-1.pdf>
 
@@ -986,8 +1004,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 309--311
  []
 
 
-
-[4]
 
 [5]
 
@@ -1001,30 +1017,168 @@ Overfull \hbox (547.365pt too wide) in alignment at lines 492--502
  [] [] [] [] [] [] [] [] [] 
  []
 
-
-
 [8]
 
 [9]
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-14-1.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-14-1.pdf>
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-14-2.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-14-2.pdf>
 
-Underfull \hbox (badness 10000) in paragraph at lines 616--618
-[][]
+[10]
+Overfull \hbox (28.94669pt too wide) in paragraph at lines 718--719
+ []\TU/lmr/m/n/10 cluster_ch
  []
 
 
+Overfull \hbox (35.41669pt too wide) in paragraph at lines 720--721
+ []\TU/lmr/m/n/10 QS.Ranking
+ []
 
-[10]
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-15-1.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-15-1.pdf>
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-15-2.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-15-2.pdf>
 
-Underfull \hbox (badness 10000) in paragraph at lines 650--652
-[][]
+Overfull \hbox (44.03358pt too wide) in paragraph at lines 722--723
+ []\TU/lmr/m/n/10 QS.Puntuacion
+ []
+
+
+Overfull \hbox (75.84464pt too wide) in paragraph at lines 724--725
+ []\TU/lmr/m/n/10 QS.Reputacion.academica
+ []
+
+
+Overfull \hbox (96.46237pt too wide) in paragraph at lines 726--727
+ []\TU/lmr/m/n/10 QS.Reputacion.entre.empleadores
+ []
+
+
+Overfull \hbox (78.4425pt too wide) in paragraph at lines 728--729
+ []\TU/lmr/m/n/10 QS.Estudiantes.por.profesor
+ []
+
+
+Overfull \hbox (88.17015pt too wide) in paragraph at lines 730--731
+ []\TU/lmr/m/n/10 QS.PromArticulos.por.docente
+ []
+
+
+Overfull \hbox (58.12134pt too wide) in paragraph at lines 732--733
+ []\TU/lmr/m/n/10 QS.Citas.por.articulo
+ []
+
+
+Overfull \hbox (78.90123pt too wide) in paragraph at lines 734--735
+ []\TU/lmr/m/n/10 QS.Docentes.con.doctorado
+ []
+
+
+Overfull \hbox (50.63922pt too wide) in paragraph at lines 736--737
+ []\TU/lmr/m/n/10 QS.Impacto.Web
+ []
+
+
+Overfull \hbox (38.27669pt too wide) in paragraph at lines 738--739
+ []\TU/lmr/m/n/10 Num_Paises
+ []
+
+
+Overfull \hbox (28.94669pt too wide) in paragraph at lines 744--745
+ []\TU/lmr/m/n/10 cluster_ch
+ []
+
+
+Overfull \hbox (35.41669pt too wide) in paragraph at lines 746--747
+ []\TU/lmr/m/n/10 QS.Ranking
+ []
+
+
+Overfull \hbox (44.03358pt too wide) in paragraph at lines 748--749
+ []\TU/lmr/m/n/10 QS.Puntuacion
+ []
+
+
+Overfull \hbox (75.84464pt too wide) in paragraph at lines 750--751
+ []\TU/lmr/m/n/10 QS.Reputacion.academica
+ []
+
+
+Overfull \hbox (96.46237pt too wide) in paragraph at lines 752--753
+ []\TU/lmr/m/n/10 QS.Reputacion.entre.empleadores
+ []
+
+
+Overfull \hbox (78.4425pt too wide) in paragraph at lines 754--755
+ []\TU/lmr/m/n/10 QS.Estudiantes.por.profesor
+ []
+
+
+Overfull \hbox (88.17015pt too wide) in paragraph at lines 756--757
+ []\TU/lmr/m/n/10 QS.PromArticulos.por.docente
+ []
+
+
+Overfull \hbox (58.12134pt too wide) in paragraph at lines 758--759
+ []\TU/lmr/m/n/10 QS.Citas.por.articulo
+ []
+
+
+Overfull \hbox (78.90123pt too wide) in paragraph at lines 760--761
+ []\TU/lmr/m/n/10 QS.Docentes.con.doctorado
+ []
+
+
+Overfull \hbox (50.63922pt too wide) in paragraph at lines 762--763
+ []\TU/lmr/m/n/10 QS.Impacto.Web
+ []
+
+
+Overfull \hbox (38.27669pt too wide) in paragraph at lines 764--765
+ []\TU/lmr/m/n/10 Num_Paises
+ []
+
+
+Overfull \hbox (5.53668pt too wide) in paragraph at lines 770--770
+ []|\TU/lmr/m/n/10 93.50|
+ []
+
+
+Overfull \hbox (0.81358pt too wide) in paragraph at lines 770--770
+ []|\TU/lmr/m/n/10 50.54|
+ []
+
+
+Overfull \hbox (5.53668pt too wide) in paragraph at lines 772--772
+ []|\TU/lmr/m/n/10 38.50|
+ []
+
+
+Overfull \hbox (0.81358pt too wide) in paragraph at lines 772--772
+ []|\TU/lmr/m/n/10 71.25|
+ []
+
+
+Overfull \hbox (5.53668pt too wide) in paragraph at lines 774--774
+ []|\TU/lmr/m/n/10 62.94|
+ []
+
+
+Overfull \hbox (0.81358pt too wide) in paragraph at lines 774--774
+ []|\TU/lmr/m/n/10 63.16|
+ []
+
+
+Overfull \hbox (10.53668pt too wide) in paragraph at lines 776--776
+ []|\TU/lmr/m/n/10 106.33|
+ []
+
+
+Overfull \hbox (0.81358pt too wide) in paragraph at lines 776--776
+ []|\TU/lmr/m/n/10 47.15|
+ []
+
+
+Overfull \hbox (5.53668pt too wide) in paragraph at lines 778--778
+ []|\TU/lmr/m/n/10 76.69|
+ []
+
+
+Overfull \hbox (0.81358pt too wide) in paragraph at lines 778--778
+ []|\TU/lmr/m/n/10 58.61|
  []
 
 
@@ -1032,35 +1186,175 @@ Underfull \hbox (badness 10000) in paragraph at lines 650--652
 [11]
 
 [12]
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-15-3.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-15-3.pdf>
+Overfull \hbox (47.22697pt too wide) in paragraph at lines 927--928
+ []\TU/lmr/m/n/10 cluster_hartigan
+ []
 
 
-[13]
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-15-4.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-15-4.pdf>
+Overfull \hbox (35.87032pt too wide) in paragraph at lines 929--930
+ []\TU/lmr/m/n/10 QS.Ranking
+ []
 
-Underfull \hbox (badness 10000) in paragraph at lines 674--688
-[][]
+
+Overfull \hbox (44.6313pt too wide) in paragraph at lines 931--932
+ []\TU/lmr/m/n/10 QS.Puntuacion
+ []
+
+
+Overfull \hbox (76.82661pt too wide) in paragraph at lines 933--934
+ []\TU/lmr/m/n/10 QS.Reputacion.academica
+ []
+
+
+Overfull \hbox (97.79124pt too wide) in paragraph at lines 935--936
+ []\TU/lmr/m/n/10 QS.Reputacion.entre.empleadores
+ []
+
+
+Overfull \hbox (79.59526pt too wide) in paragraph at lines 937--938
+ []\TU/lmr/m/n/10 QS.Estudiantes.por.profesor
+ []
+
+
+Overfull \hbox (89.36026pt too wide) in paragraph at lines 939--940
+ []\TU/lmr/m/n/10 QS.PromArticulos.por.docente
+ []
+
+
+Overfull \hbox (59.0286pt too wide) in paragraph at lines 941--942
+ []\TU/lmr/m/n/10 QS.Citas.por.articulo
+ []
+
+
+Overfull \hbox (79.98462pt too wide) in paragraph at lines 943--944
+ []\TU/lmr/m/n/10 QS.Docentes.con.doctorado
+ []
+
+
+Overfull \hbox (51.26897pt too wide) in paragraph at lines 945--946
+ []\TU/lmr/m/n/10 QS.Impacto.Web
+ []
+
+
+Overfull \hbox (38.73032pt too wide) in paragraph at lines 947--948
+ []\TU/lmr/m/n/10 Num_Paises
+ []
+
+
+Overfull \hbox (47.22697pt too wide) in paragraph at lines 953--954
+ []\TU/lmr/m/n/10 cluster_hartigan
+ []
+
+
+Overfull \hbox (35.87032pt too wide) in paragraph at lines 955--956
+ []\TU/lmr/m/n/10 QS.Ranking
+ []
+
+
+Overfull \hbox (44.6313pt too wide) in paragraph at lines 957--958
+ []\TU/lmr/m/n/10 QS.Puntuacion
+ []
+
+
+Overfull \hbox (76.82661pt too wide) in paragraph at lines 959--960
+ []\TU/lmr/m/n/10 QS.Reputacion.academica
+ []
+
+
+Overfull \hbox (97.79124pt too wide) in paragraph at lines 961--962
+ []\TU/lmr/m/n/10 QS.Reputacion.entre.empleadores
+ []
+
+
+Overfull \hbox (79.59526pt too wide) in paragraph at lines 963--964
+ []\TU/lmr/m/n/10 QS.Estudiantes.por.profesor
+ []
+
+
+Overfull \hbox (89.36026pt too wide) in paragraph at lines 965--966
+ []\TU/lmr/m/n/10 QS.PromArticulos.por.docente
+ []
+
+
+Overfull \hbox (59.0286pt too wide) in paragraph at lines 967--968
+ []\TU/lmr/m/n/10 QS.Citas.por.articulo
+ []
+
+
+Overfull \hbox (79.98462pt too wide) in paragraph at lines 969--970
+ []\TU/lmr/m/n/10 QS.Docentes.con.doctorado
+ []
+
+
+Overfull \hbox (51.26897pt too wide) in paragraph at lines 971--972
+ []\TU/lmr/m/n/10 QS.Impacto.Web
+ []
+
+
+Overfull \hbox (38.73032pt too wide) in paragraph at lines 973--974
+ []\TU/lmr/m/n/10 Num_Paises
+ []
+
+
+Overfull \hbox (5.99031pt too wide) in paragraph at lines 979--979
+ []|\TU/lmr/m/n/10 93.50|
+ []
+
+
+Overfull \hbox (1.4113pt too wide) in paragraph at lines 979--979
+ []|\TU/lmr/m/n/10 50.54|
+ []
+
+
+Overfull \hbox (5.99031pt too wide) in paragraph at lines 981--981
+ []|\TU/lmr/m/n/10 38.50|
+ []
+
+
+Overfull \hbox (1.4113pt too wide) in paragraph at lines 981--981
+ []|\TU/lmr/m/n/10 71.25|
+ []
+
+
+Overfull \hbox (5.99031pt too wide) in paragraph at lines 983--983
+ []|\TU/lmr/m/n/10 62.94|
+ []
+
+
+Overfull \hbox (1.4113pt too wide) in paragraph at lines 983--983
+ []|\TU/lmr/m/n/10 63.16|
+ []
+
+
+Overfull \hbox (10.99031pt too wide) in paragraph at lines 985--985
+ []|\TU/lmr/m/n/10 106.33|
+ []
+
+
+Overfull \hbox (1.4113pt too wide) in paragraph at lines 985--985
+ []|\TU/lmr/m/n/10 47.15|
+ []
+
+
+Overfull \hbox (5.99031pt too wide) in paragraph at lines 987--987
+ []|\TU/lmr/m/n/10 76.69|
+ []
+
+
+Overfull \hbox (1.4113pt too wide) in paragraph at lines 987--987
+ []|\TU/lmr/m/n/10 58.61|
  []
 
 
 
-[14]
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-16-1.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-16-1.pdf>
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-16-2.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-16-2.pdf>
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-16-3.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-16-3.pdf>
+[13] [14]
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-11-1.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-11-1.pdf>
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-11-2.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-11-2.pdf>
 
-Underfull \hbox (badness 10000) in paragraph at lines 696--699
+Underfull \hbox (badness 10000) in paragraph at lines 1192--1194
 [][]
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 696--699
-[]
  []
 
 
@@ -1068,80 +1362,130 @@ Underfull \hbox (badness 10000) in paragraph at lines 696--699
 [15]
 
 [16]
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-12-1.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-12-1.pdf>
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-12-2.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-12-2.pdf>
+
+Underfull \hbox (badness 10000) in paragraph at lines 1226--1228
+[][]
+ []
+
+
 
 [17]
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-17-1.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-17-1.pdf>
-
-Underfull \hbox (badness 10000) in paragraph at lines 723--728
-[][]
- []
-
-
 
 [18]
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-18-1.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-18-1.pdf>
-
-Underfull \hbox (badness 10000) in paragraph at lines 751--756
-[][]
- []
-
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-12-3.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-12-3.pdf>
 
 
 [19]
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-12-4.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-12-4.pdf>
+
+Underfull \hbox (badness 10000) in paragraph at lines 1250--1264
+[][]
+ []
+
+
 
 [20]
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-19-1.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-19-1.pdf>
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-19-2.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-19-2.pdf>
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-13-1.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-13-1.pdf>
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-13-2.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-13-2.pdf>
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-13-3.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-13-3.pdf>
 
-Underfull \hbox (badness 10000) in paragraph at lines 811--813
+Underfull \hbox (badness 10000) in paragraph at lines 1272--1275
 [][]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1272--1275
+[]
  []
 
 
 
 [21]
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-19-3.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-19-3.pdf>
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-19-4.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-19-4.pdf>
-
-Underfull \hbox (badness 10000) in paragraph at lines 842--844
-[][]
- []
-
-
 
 [22]
 
 [23]
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-19-5.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-19-5.pdf>
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-14-1.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-14-1.pdf>
 
-
-[24]
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-19-6.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-19-6.pdf>
-
-
-[25]
-File: LABORATORIO_5_files/figure-latex/unnamed-chunk-19-7.pdf Graphic file (type pdf)
-<use LABORATORIO_5_files/figure-latex/unnamed-chunk-19-7.pdf>
-
-Underfull \hbox (badness 10000) in paragraph at lines 882--884
+Underfull \hbox (badness 10000) in paragraph at lines 1299--1304
 [][]
  []
 
 
 
+[24]
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-15-1.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-15-1.pdf>
+
+Underfull \hbox (badness 10000) in paragraph at lines 1327--1332
+[][]
+ []
+
+
+
+[25]
+
 [26]
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-16-1.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-16-1.pdf>
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-16-2.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-16-2.pdf>
+
+Underfull \hbox (badness 10000) in paragraph at lines 1387--1389
+[][]
+ []
+
+
 
 [27]
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-16-3.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-16-3.pdf>
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-16-4.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-16-4.pdf>
 
-[28] (./LABORATORIO_5.aux)
+Underfull \hbox (badness 10000) in paragraph at lines 1418--1420
+[][]
+ []
+
+
+
+[28]
+
+[29]
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-16-5.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-16-5.pdf>
+
+
+[30]
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-16-6.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-16-6.pdf>
+
+
+[31]
+File: LABORATORIO_5_files/figure-latex/unnamed-chunk-16-7.pdf Graphic file (type pdf)
+<use LABORATORIO_5_files/figure-latex/unnamed-chunk-16-7.pdf>
+
+Underfull \hbox (badness 10000) in paragraph at lines 1458--1460
+[][]
+ []
+
+
+
+[32]
+
+[33]
+
+[34] (./LABORATORIO_5.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-07-19>
@@ -1151,12 +1495,12 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 19118 strings out of 470472
- 353475 string characters out of 5489962
- 908376 words of memory out of 5000000
- 47146 multiletter control sequences out of 15000+600000
- 630529 words of font info for 75 fonts, out of 8000000 for 9000
+ 19176 strings out of 470472
+ 354985 string characters out of 5489962
+ 916590 words of memory out of 5000000
+ 47189 multiletter control sequences out of 15000+600000
+ 633374 words of font info for 93 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 90i,8n,114p,412b,476s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,8n,114p,412b,513s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on LABORATORIO_5.pdf (28 pages).
+Output written on LABORATORIO_5.pdf (34 pages).

@@ -197,41 +197,148 @@ al 3 en el indicador de HartiganPor. Por último los países de Puerto Rico y
 Uruguay pasaron de estar en grupo 3 con respecto a Calinski–Harabasz al 
 grupo 1 con el indicador de Hartigan. 
 
-```{r}
 
-```
+## PUNTO 4
 
-
-
-```{r}
-
-```
+De el conjunto de datos r14_Sci_Qs_Webometrics.csv, seleccionamos las columnas correspondientes a los indicadores de QS, y agregar los datos a nivel de país calculando el promedio de cada indicador. Los valores faltantes (NA) se imputan con la media de su respectiva columna para poder aplicar el algoritmo K-medias.
 
 
+# --- PASO 1: CARGA Y PREPARACIÓN DE DATOS ---
 
 ```{r}
+webo<-read.csv("r14_Sci_Qs_Webometrics.csv",sep = ";",dec = ",") 
+datos_uni <- webo
+# Seleccionar columnas de QS y forzar conversión a numérico
+qs_cols <- colnames(datos_uni)[startsWith(colnames(datos_uni), "QS.")]
+datos_qs <- datos_uni %>%
+  select(Pais, all_of(qs_cols)) %>%
+  mutate(across(all_of(qs_cols), as.numeric))
 
+# Agrupar por país y calcular promedios
+promedios_pais_qs <- datos_qs %>%
+  group_by(Pais) %>%
+  summarise(across(everything(), ~mean(.x, na.rm = TRUE)), .groups = 'drop')
+
+# Preparar datos para clustering, extrayendo nombres
+paises_nombres <- promedios_pais_qs$Pais
+datos_cluster_pre <- promedios_pais_qs %>% select(-Pais)
+
+# Imputar NAs usando dplyr
+datos_cluster <- datos_cluster_pre %>%
+  mutate(across(everything(), ~ifelse(is.na(.), mean(., na.rm = TRUE), .)))
+
+# Escalar los datos es crucial para K-medias
+datos_escalados <- scale(datos_cluster)
+rownames(datos_escalados) <- paises_nombres
+
+cat("Datos listos y escalados para el clustering.")
 ```
 
+## 2. Agrupación con Índice Carlinski-Harabasz
+
+Se utiliza el índice de Carlinski-Harabasz (CH) para determinar el número óptimo de clústeres. Este índice evalúa la calidad de la agrupación basándose en la relación entre la varianza inter-clúster y la varianza intra-clúster.
+
+
+
+# --- PASO 2: AGRUPACIÓN CON ÍNDICE CARLINSKI-HARABASZ ---
 ```{r}
+cat("--- Determinando el número de clústeres con Carlinski-Harabasz ---\n")
+set.seed(123)
+nc_ch <- NbClust(datos_escalados, min.nc = 2, max.nc = 10, method = "kmeans", index = "ch")
 
+k_ch <- nc_ch$Best.nc[1]
+cat(paste("\nEl número óptimo de clústeres según Carlinski-Harabasz es:", k_ch, "\n"))
+
+# Realizar el clustering K-medias
+kmeans_ch <- kmeans(datos_escalados, centers = k_ch, nstart = 25)
+promedios_pais_qs$cluster_ch <- kmeans_ch$cluster
+
+# Tipificar los clústeres
+cat("\n--- Perfil de los clústeres (Carlinski-Harabasz) ---\n")
+perfil_ch <- promedios_pais_qs %>%
+  select(-Pais) %>%
+  group_by(cluster_ch) %>%
+  summarise(across(everything(), ~mean(.x, na.rm = TRUE)), .groups = 'drop') %>%
+  mutate(Num_Paises = as.integer(table(kmeans_ch$cluster)))
+kable(perfil_ch, caption = "Perfil de Clústeres (Medias) - Carlinski-Harabasz", digits = 2)
+
+cat("\n--- Países por Clúster (Carlinski-Harabasz) ---\n")
+split(paises_nombres, kmeans_ch$cluster)
 ```
 
+### Análisis del Resultado (Carlinski-Harabasz)
 
+El índice de Carlinski-Harabasz sugiere que la estructura óptima de los datos consiste en *5 clústeres*. A continuación se describe el perfil de cada uno:
+
+*   *Clúster 1 (Especialistas en Impacto de Citas): Agrupa a **Panamá, Paraguay y Uruguay*. Este grupo destaca por tener el mayor impacto de citas por artículo (QS.Citas.por.articulo = 94.40), pero muestra debilidades en producción científica y formación doctoral.
+*   *Clúster 2 (Líder Indiscutible): Compuesto únicamente por **Costa Rica*. Representa el rendimiento de élite, liderando en puntuación general (71.25) y reputación académica (87.30), lo que lo aísla del resto.
+*   *Clúster 3 (Potencias en Investigación): Incluye a **Brasil y Puerto Rico*. Su principal fortaleza es la alta producción de artículos (62.10) y el altísimo porcentaje de docentes con doctorado (96.18).
+*   *Clúster 4 (Sistemas en Desarrollo): Formado por **Bolivia y Ecuador*. Este grupo presenta los promedios más bajos en la mayoría de los indicadores de QS, especialmente en reputación y puntuación general.
+*   *Clúster 5 (Núcleo Consolidado): Es el grupo más grande, con **Argentina, Chile, Colombia, Cuba, México, Perú y Venezuela*. Se caracteriza por un rendimiento balanceado y sólido en todos los indicadores, conformando el núcleo competitivo de la región.
+
+## 3. Agrupación con Índice de Hartigan
+
+Como método de validación, se repite el proceso utilizando el índice de Hartigan, una regla heurística que busca un "codo" o punto de inflexión en la mejora de la homogeneidad de los clústeres.
+
+# --- PASO 3: AGRUPACIÓN CON ÍNDICE DE HARTIGAN ---
 ```{r}
+cat("\n\n--- Determinando el número de clústeres con Hartigan ---\n")
+set.seed(123)
+nc_hartigan <- NbClust(datos_escalados, min.nc = 2, max.nc = 10, method = "kmeans", index = "hartigan")
 
+k_hartigan <- nc_hartigan$Best.nc[1]
+cat(paste("\nEl número óptimo de clústeres según Hartigan es:", k_hartigan, "\n"))
+
+kmeans_hartigan <- kmeans(datos_escalados, centers = k_hartigan, nstart = 25)
+promedios_pais_qs$cluster_hartigan <- kmeans_hartigan$cluster
+
+cat("\n--- Perfil de los clústeres (Hartigan) ---\n")
+perfil_hartigan <- promedios_pais_qs %>%
+  select(-Pais, -cluster_ch) %>%
+  group_by(cluster_hartigan) %>%
+  summarise(across(everything(), ~mean(.x, na.rm = TRUE)), .groups = 'drop') %>%
+  mutate(Num_Paises = as.integer(table(kmeans_hartigan$cluster)))
+kable(perfil_hartigan, caption = "Perfil de Clústeres (Medias) - Hartigan", digits = 2)
+
+cat("\n--- Países por Clúster (Hartigan) ---\n")
+split(paises_nombres, kmeans_hartigan$cluster)
 ```
 
+### Análisis del Resultado (Hartigan)
 
+De manera muy notable, el índice de Hartigan también sugiere que *5 es el número óptimo de clústeres*. Al examinar la composición de los grupos, se observa que la partición es idéntica a la obtenida con el índice de Carlinski-Harabasz, lo que refuerza la robustez de esta estructura.
+
+## 4. Comparación de Agrupaciones y Conclusiones Finales
+
+Para formalizar la comparación, se construye una tabla de contingencia que cruza las asignaciones de ambos métodos.
+
+
+# --- PASO 4: COMPARACIÓN DE LAS AGRUPACIONES ---
 ```{r}
+cat("\n\n--- Comparación de las dos agrupaciones ---\n")
+comparacion <- table(CH_Cluster = promedios_pais_qs$cluster_ch, 
+                     Hartigan_Cluster = promedios_pais_qs$cluster_hartigan)
+kable(comparacion, caption = "Tabla de Contingencia: Carlinski-Harabasz vs. Hartigan")
 
+cat("\nAsignación de cada país en ambas agrupaciones:\n")
+kable(promedios_pais_qs[, c("Pais", "cluster_ch", "cluster_hartigan")], 
+            row.names = FALSE,
+            caption="Asignación de clúster por país para ambos métodos")
 ```
 
+### Conclusión
 
-```{r}
+El análisis nos revela que: *ambos índices de validación (Carlinski-Harabasz y Hartigan) coinciden en que la estructura más apropiada para los datos es una partición de 5 clústeres, y además, ambos métodos generan exactamente la misma agrupación de países.*
 
-```
+La tabla de contingencia es una *matriz diagonal perfecta*, lo que indica una concordancia del 100% entre los dos resultados. Esta robustez nos permite concluir con alta confianza que, según los indicadores de QS, el panorama universitario en Latinoamérica se segmenta en cinco perfiles bien definidos:
 
+1.  *Líder de Élite (CRI)*: Destacado por su reputación y puntuación general.
+2.  *Potencias de Investigación (BRA, PRI)*: Fuertes en producción científica y formación doctoral.
+3.  *Núcleo Competitivo (ARG, CHL, COL, etc.)*: Grupo grande con un rendimiento sólido y balanceado.
+4.  *Especialistas en Impacto (PAN, PY, URY)*: Sobresalen en citas por artículo a pesar de una menor producción.
+5.  *Sistemas en Desarrollo (BOL, ECU)*: Con los mayores desafíos en las métricas académicas tradicionales de QS.
+
+Este analisis va más allá de un simple ranking y ofrece una visión más clara de las fortalezas y debilidades de los sistemas de educación superior en la región.
 
 
 # Punto 5
